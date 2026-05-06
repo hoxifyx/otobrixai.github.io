@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title> — Executive Security Summary</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+      :root {
+        --red: #ff3b30;
+        --red-glow: rgba(255, 59, 48, 0.4);
+        --bg: #030711;
+        --surface: #0a0f1d;
+        --surface-2: #161b22;
+        --border: rgba(255, 255, 255, 0.08);
+        --text: #f8fafc;
+        --text-muted: #94a3b8;
+        --critical: #ef4444;
+        --high: #f97316;
+        --safe: #22c55e;
+        --inherited: #eab308;
+        --card-bg: rgba(15, 23, 42, 0.6);
+        --glass: rgba(255, 255, 255, 0.03);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Inter", system-ui, sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .page {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+      }
+
+      /* Header */
+      .header {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 3rem;
+        margin-bottom: 4rem;
+        position: relative;
+      }
+      .header::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100px;
+        height: 3px;
+        background: var(--red);
+        box-shadow: 0 0 15px var(--red-glow);
+      }
+      .header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-bottom: 1rem;
+        background: linear-gradient(to right, #fff, #94a3b8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .header .meta {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .header .verdict {
+        display: inline-block;
+        margin-top: 1.5rem;
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--critical);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        padding: 0.5rem 1.25rem;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+      }
+
+      /* Section */
+      .section {
+        margin-bottom: 5rem;
+      }
+      .section h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .section h2::before {
+        content: "";
+        width: 12px;
+        height: 12px;
+        background: var(--red);
+        border-radius: 2px;
+        box-shadow: 0 0 10px var(--red-glow);
+      }
+
+      /* Stats grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
+      .stat-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2rem 1.5rem;
+        text-align: left;
+        backdrop-filter: blur(8px);
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+      .stat-card:hover {
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+      .stat-card .value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .stat-card .label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+      }
+      .stat-card.critical .value { color: var(--critical); }
+      .stat-card.safe .value { color: var(--safe); }
+
+      /* Utility Colors */
+      .text-critical { color: var(--critical) !important; }
+      .text-high { color: var(--high) !important; }
+      .text-safe { color: var(--safe) !important; }
+      .text-inherited { color: var(--inherited) !important; }
+
+      /* Visual Polish */
+      .glass-box {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2rem;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Finding Narrative */
+      .narrative-block {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.6));
+        border-left: 4px solid var(--high);
+        padding: 2rem;
+        border-radius: 0 12px 12px 0;
+        margin-bottom: 3rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      }
+      .narrative-block h3 {
+        color: var(--high);
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .narrative-block p {
+        font-size: 1.1rem;
+        color: #e2e8f0;
+        line-height: 1.7;
+      }
+
+      /* Trust Table */
+      .table-wrapper {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .trust-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--card-bg);
+      }
+      .trust-table th {
+        background: rgba(255,255,255,0.02);
+        padding: 1.25rem 1.5rem;
+        text-align: left;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        border-bottom: 1px solid var(--border);
+      }
+      .trust-table td {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+      }
+      .trust-table tr:last-child td { border-bottom: none; }
+
+      /* Isolation Result */
+      .isolation-status-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 3rem;
+        background: radial-gradient(circle at center, rgba(239, 68, 68, 0.05) 0%, transparent 70%);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        margin-bottom: 3rem;
+      }
+      .isolation-status-container.pass {
+        background: radial-gradient(circle at center, rgba(34, 197, 94, 0.05) 0%, transparent 70%);
+      }
+      .isolation-status-container .status-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+      }
+      .isolation-status-container .status-label {
+        font-size: 3.5rem;
+        font-weight: 900;
+        letter-spacing: -0.05em;
+        line-height: 1;
+        margin-bottom: 1rem;
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      /* Footer */
+      .footer {
+        border-top: 1px solid var(--border);
+        padding-top: 3rem;
+        margin-top: 6rem;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-align: center;
+        letter-spacing: 0.05em;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      
+      code {
+        font-family: 'JetBrains Mono', monospace;
+      }
+    </style>
+    </style>
+    <!-- Mermaid.js for diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        mermaid.initialize({
+          startOnLoad: true,
+          theme: "dark",
+          securityLevel: "loose",
+          fontFamily: "Inter, monospace",
+          flowchart: {
+            useMaxWidth: true,
+            htmlLabels: true,
+            curve: "basis",
+          },
+        });
+
+        // Wait for Mermaid to render before PDF export (signaled by class)
+        setTimeout(function () {
+          document.body.classList.add("mermaid-rendered");
+        }, 1000);
+      });
+    </script>
+  </head>
+  <body>
+    <div class="page">
+      <!-- Header -->
+      <div class="header">
+        <h1>Executive Security Assessment</h1>
+        <div class="meta">
+          Client: <strong>democompany</strong> &nbsp;|&nbsp; Audit
+          ID: <strong>STRATEGIC-20260312-001</strong> &nbsp;|&nbsp; Date:
+          <strong>2026-03-12</strong>
+        </div>
+        <div class="verdict">⚠ ATTACK SIMULATION ENGINE — v7.2.0</div>
+      </div>
+
+      <!-- Attack Surface Overview -->
+      <div class="section">
+        <h2>Attack Surface Overview</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="value">
+              12
+            </div>
+            <div class="label">Attack Paths</div>
+          </div>
+          <div class="stat-card critical">
+            <div class="value">
+              6
+            </div>
+            <div class="label">Critical Paths</div>
+          </div>
+          <div class="stat-card">
+            <div class="value">
+              8
+            </div>
+            <div class="label">Sensitive Tables</div>
+          </div>
+          <div class="stat-card critical">
+            <div class="value" style="font-size: 1.8rem;">EXPOSED</div>
+            <div class="label">Isolation Status</div>
+          </div>
+          <div class="stat-card">
+            <div class="value">6</div>
+            <div class="label">Total Findings</div>
+          </div>
+          <div class="stat-card critical">
+            <div class="value">12</div>
+            <div class="label">Boundary Violations</div>
+          </div>
+        </div>
+        
+      </div>
+
+      <!-- Attack Narratives -->
+      
+      <div class="section">
+        <h2>Attack Path Analysis</h2>
+        <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">
+          The following attack paths were identified through graph-based traversal of your schema.
+          Each path represents a potential route from a public entry point to sensitive data.
+          <strong>Confidence scores</strong> indicate the determinism of each finding.
+        </p>
+
+        <div class="narrative-block">
+            <h3>🔍 Key Finding Narrative</h3>
+            <p>
+                <strong>Path Discovery:</strong> Malicious actor pivots through unsecured
+                <code>'public.comments'</code> to bypass RLS on <code>'private.profiles'</code>.
+                Total tenant data exposure confirmed in &lt; 4 minutes.
+            </p>
+            <div style="margin-top: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">
+                Confidence: <span style="color: var(--high); font-weight: 700;">HIGH (92%)</span> — 
+                Verified via deterministic sandbox execution traces.
+            </div>
+        </div>
+        
+
+        
+        
+            
+<div class="attack-path-card glass-box" style="margin-bottom: 3rem; border-left: 4px solid var(--critical);">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+    <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">
+            Simulation Case #1
+        </div>
+        <h4 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text);">
+            Public Endpoint 
+            <span style="color: var(--text-muted); font-weight: 400; margin: 0 0.5rem;">→</span> 
+            Sensitive Data
+        </h4>
+    </div>
+    <div style="text-align: right;">
+        
+        
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--text); font-family: 'JetBrains Mono', monospace;">95%</div>
+        <div class="text-critical" style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;">
+            LOW CONFIDENCE
+        </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 2rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px; font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; border: 1px solid var(--border);">
+    <strong style="color: var(--text); display: block; margin-bottom: 0.25rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">Analytical Justification</strong>
+    Verified via Sandbox injection and transitive trust propagation logic.
+  </div>
+
+  <!-- Mermaid.js Visualization -->
+  <div class="mermaid-wrapper" style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 2rem; margin: 2rem 0; border: 1px solid var(--border); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);">
+    <pre class="mermaid" style="margin: 0; background: transparent;">
+graph LR
+    classDef entry fill:#1e3a8a,stroke:#3b82f6,stroke-width:2px,color:#fff
+    classDef pivot fill:#713f12,stroke:#eab308,stroke-width:2px,color:#fff
+    classDef payload fill:#7f1d1d,stroke:#ef4444,stroke-width:2px,color:#fff
+    
+    E0["public comments"]:::entry
+    V0_1["Filtered Pivot"]:::pivot
+    P0["private profiles"]:::payload
+    
+    E0 --> V0_1
+    V0_1 --> P0
+        </pre>
+  </div>
+
+  <!-- Detailed Path Description -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+    <div style="padding: 1.25rem; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border);">
+      <div style="font-size: 0.65rem; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; font-weight: 700;">Vector Source</div>
+      <div style="font-weight: 700; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">public.comments</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Initial Access Point</div>
+    </div>
+
+    <div style="padding: 1.25rem; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border);">
+      <div style="font-size: 0.65rem; color: #eab308; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; font-weight: 700;">Hops & Pivots</div>
+      <div style="font-weight: 700; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
+         
+         
+            1 Nodes 
+        
+      </div>
+      <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Transitive Chain</div>
+    </div>
+
+    <div style="padding: 1.25rem; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border);">
+      <div style="font-size: 0.65rem; color: #ef4444; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; font-weight: 700;">Exfiltration Target</div>
+      <div style="font-weight: 700; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">private.profiles</div>
+      <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Compromised Asset</div>
+    </div>
+  </div>
+
+  <!-- Evidence -->
+  <div style="margin-top: 1.5rem; padding: 1.25rem; background: rgba(239, 68, 68, 0.05); border: 1px dashed rgba(239, 68, 68, 0.3); border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fca5a5; line-height: 1.5;">
+    <strong style="color: var(--text); margin-right: 0.5rem; text-transform: uppercase; font-size: 0.7rem;">Verification:</strong> 
+    Attacker leverages a misconfigured foreign key on 'public.comments' to traverse into the profile vault.
+  </div>
+</div>
+
+        
+      </div>
+      
+
+      <!-- Transitive Trust Analysis -->
+      
+
+      <!-- Tenant Isolation Results -->
+      <div class="section">
+        <h2>Tenant Isolation Status</h2>
+        <div class="isolation-status-container ">
+            <div class="status-icon">
+                🚨
+            </div>
+            <div class="status-label text-critical">
+                PATH EXPOSED
+            </div>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+                <strong>CRITICAL:</strong> Deterministic tenant isolation failure detected.
+                Cross-tenant data retrieval verified via automated graph traversal.
+            </p>
+        </div>
+        
+      </div>
+
+      <!-- Sensitive Data Exposure -->
+      
+
+
+      
+      
+      
+<div class="compliance-section" style="margin-top: 3rem; padding: 2rem; border: 1px solid #1f2d45; border-radius: 12px; background: rgba(30, 41, 59, 0.5);">
+    <h3 style="color: #60a5fa; margin-top: 0; display: flex; align-items: center; font-size: 1.25rem;">
+        <svg style="width: 24px; margin-right: 10px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 21.355l7.118-4.016a11.955 11.955 0 005.618-4.016V7.259l-7.118 4.016z"></path>
+        </svg>
+        SOC2 / Compliance Evidence Package
+    </h3>
+    
+    <p style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 1.5rem;">
+        The Otobrix Engine v7.2.0 performs deterministic verification of technical controls required for 
+        <strong>SOC2 Common Criteria (CC6.1, CC6.7)</strong> and <strong>OWASP API Security Top 10</strong>. 
+        This audit provides evidentiary support for the following control assertions:
+    </p>
+
+    <!-- Compliance Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+        
+            
+            <div style="background: #0f172a; padding: 1.25rem; border-radius: 8px; border-left: 4px solid 
+                       #fbbf24; border-top: 1px solid #1e293b; border-right: 1px solid #1e293b; border-bottom: 1px solid #1e293b;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; align-items: flex-start;">
+                    <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #64748b; background: #1e293b; padding: 0.1rem 0.4rem; border-radius: 4px;">
+                        SOC2 CC6.1
+                    </span>
+                    <span style="font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 9999px; text-transform: uppercase;
+                                background: rgba(245, 158, 11, 0.15); color: #fbbf24;
+                                       ">
+                        partial
+                    </span>
+                </div>
+                
+                <h4 style="margin: 0 0 0.5rem 0; font-size: 1rem; color: #f1f5f9; font-weight: 600;">Logical Access Controls</h4>
+                <p style="font-size: 0.85rem; color: #94a3b8; margin: 0 0 1rem 0; line-height: 1.4;">Restrict access to authorized users</p>
+                
+                <div style="font-size: 0.8rem; background: #1e293b; padding: 0.75rem; border-radius: 6px; border: 1px solid #334155;">
+                    <div style="color: #60a5fa; font-size: 0.65rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Technical Evidence</div>
+                    <span style="color: #cbd5e1;">RLS is enabled but policies are missing on 6 critical tables</span>
+                </div>
+                
+                
+                <div style="margin-top: 1rem;">
+                    <div style="color: #64748b; font-size: 0.65rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem;">Related Discoveries</div>
+                    <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                        
+                        <div style="font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center;">
+                            <span style="width: 4px; height: 4px; background: #ef4444; border-radius: 50%; margin-right: 8px;"></span>
+                            CRIT-01
+                        </div>
+                        
+                        <div style="font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center;">
+                            <span style="width: 4px; height: 4px; background: #ef4444; border-radius: 50%; margin-right: 8px;"></span>
+                            CRIT-03
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div style="background: #0f172a; padding: 1.25rem; border-radius: 8px; border-left: 4px solid 
+                       #ef4444; border-top: 1px solid #1e293b; border-right: 1px solid #1e293b; border-bottom: 1px solid #1e293b;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; align-items: flex-start;">
+                    <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #64748b; background: #1e293b; padding: 0.1rem 0.4rem; border-radius: 4px;">
+                        SOC2 CC6.7
+                    </span>
+                    <span style="font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 9999px; text-transform: uppercase;
+                                background: rgba(239, 68, 68, 0.15); color: #f87171;
+                                       ">
+                        fail
+                    </span>
+                </div>
+                
+                <h4 style="margin: 0 0 0.5rem 0; font-size: 1rem; color: #f1f5f9; font-weight: 600;">Data Isolation</h4>
+                <p style="font-size: 0.85rem; color: #94a3b8; margin: 0 0 1rem 0; line-height: 1.4;">Prevent cross-tenant leaks</p>
+                
+                <div style="font-size: 0.8rem; background: #1e293b; padding: 0.75rem; border-radius: 6px; border: 1px solid #334155;">
+                    <div style="color: #60a5fa; font-size: 0.65rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Technical Evidence</div>
+                    <span style="color: #cbd5e1;">Foreign key pivot-points allow path traversal between organization silos</span>
+                </div>
+                
+                
+                <div style="margin-top: 1rem;">
+                    <div style="color: #64748b; font-size: 0.65rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem;">Related Discoveries</div>
+                    <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                        
+                        <div style="font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center;">
+                            <span style="width: 4px; height: 4px; background: #ef4444; border-radius: 50%; margin-right: 8px;"></span>
+                            CRIT-04
+                        </div>
+                        
+                        <div style="font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center;">
+                            <span style="width: 4px; height: 4px; background: #ef4444; border-radius: 50%; margin-right: 8px;"></span>
+                            PATH-01
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+            
+        
+            
+            <div style="background: #0f172a; padding: 1.25rem; border-radius: 8px; border-left: 4px solid 
+                       #ef4444; border-top: 1px solid #1e293b; border-right: 1px solid #1e293b; border-bottom: 1px solid #1e293b;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; align-items: flex-start;">
+                    <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #64748b; background: #1e293b; padding: 0.1rem 0.4rem; border-radius: 4px;">
+                        OWASP API1:2023
+                    </span>
+                    <span style="font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 9999px; text-transform: uppercase;
+                                background: rgba(239, 68, 68, 0.15); color: #f87171;
+                                       ">
+                        fail
+                    </span>
+                </div>
+                
+                <h4 style="margin: 0 0 0.5rem 0; font-size: 1rem; color: #f1f5f9; font-weight: 600;">BOLA</h4>
+                <p style="font-size: 0.85rem; color: #94a3b8; margin: 0 0 1rem 0; line-height: 1.4;">Broken Object Level Authorization</p>
+                
+                <div style="font-size: 0.8rem; background: #1e293b; padding: 0.75rem; border-radius: 6px; border: 1px solid #334155;">
+                    <div style="color: #60a5fa; font-size: 0.65rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Technical Evidence</div>
+                    <span style="color: #cbd5e1;">Direct object reference on execution_entity allows global data retrieval</span>
+                </div>
+                
+                
+                <div style="margin-top: 1rem;">
+                    <div style="color: #64748b; font-size: 0.65rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem;">Related Discoveries</div>
+                    <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                        
+                        <div style="font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center;">
+                            <span style="width: 4px; height: 4px; background: #ef4444; border-radius: 50%; margin-right: 8px;"></span>
+                            CRIT-04
+                        </div>
+                        
+                    </div>
+                </div>
+                
+            </div>
+            
+        
+    </div>
+
+    <!-- Auditor Note -->
+    <div style="margin-top: 2rem; padding: 1.25rem; background: rgba(37, 99, 235, 0.05); border-radius: 10px; border: 1px dashed #3b82f6;">
+        <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+            <div style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; margin-right: 10px;"></div>
+            <h4 style="margin: 0; font-size: 0.85rem; color: #f1f5f9; text-transform: uppercase; letter-spacing: 0.05em;">Auditor Note: The Otobrix Shield</h4>
+        </div>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin: 0; line-height: 1.5;">
+            The implementation of <strong>The Shield CI/CD Gate</strong> satisfies the requirement for 
+            "Continuous Monitoring of Technical Controls" (CC7.1) by preventing regression leaks during 
+            every deployment cycle. This provides ongoing compliance evidence beyond point-in-time audit.
+        </p>
+    </div>
+
+    <!-- Framework Coverage Summary -->
+    <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+        <div style="background: #0f172a; padding: 1.25rem; border-radius: 10px; text-align: center; border: 1px solid #1e293b;">
+            <div style="font-size: 1.75rem; font-weight: 700; color: #60a5fa;">14%</div>
+            <div style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; margin-top: 0.25rem; font-weight: 600;">Controls Verified</div>
+            <div style="font-size: 0.8rem; color: #10b981; margin-top: 0.5rem;">
+                ✓ CC6.1, CC6.7, CC7.1 tested
+            </div>
+        </div>
+        <div style="background: #0f172a; padding: 1.25rem; border-radius: 10px; text-align: center; border: 1px solid #1e293b;">
+            <div style="font-size: 1.75rem; font-weight: 700; color: #fbbf24;">84%</div>
+            <div style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; margin-top: 0.25rem; font-weight: 600;">Violation Rate</div>
+            <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.5rem;">All controls passed</div>
+        </div>
+        <div style="background: #0f172a; padding: 1.25rem; border-radius: 10px; text-align: center; border: 1px solid #1e293b;">
+            <div style="font-size: 1.75rem; font-weight: 700; color: #10b981;">1</div>
+            <div style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; margin-top: 0.25rem; font-weight: 600;">Controls Verified</div>
+        </div>
+    </div>
+</div>
+
+      
+      <!-- Anchor for detailed SOC2 report -->
+      <!-- Footer -->
+      <div class="footer">
+        Proprietary assessment generated by Otobrix Security Engine v7.2.0 — Confidential
+      </div>
+    </div>
+  </body>
+</html>

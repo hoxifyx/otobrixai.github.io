@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SOC2 Compliance Evidence - democompany</title>
+    <style>
+        @page { size: letter; margin: 1.5cm; @bottom-right { content: "SOC2 EVIDENCE - democompany"; font-size: 8pt; color: #999; } }
+        body { font-family: 'Inter', sans-serif; font-size: 10pt; line-height: 1.4; color: #1a202c; }
+        .header { text-align: left; border-bottom: 2px solid #2d3748; padding-bottom: 15px; margin-bottom: 25px; }
+        h1 { font-size: 18pt; letter-spacing: 0.5px; text-transform: uppercase; margin: 0; }
+        h2 { font-size: 14pt; color: #2d3748; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-top: 25px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 8.5pt; }
+        th, td { padding: 10px; border: 1px solid #e2e8f0; text-align: left; vertical-align: top; }
+        th { background: #2d3748; color: white; text-transform: uppercase; font-size: 8pt; }
+        .status-pass { color: #2f855a; font-weight: bold; }
+        .status-fail { color: #e53e3e; font-weight: bold; }
+        .box { padding: 15px; background: #fdfdfd; border-radius: 6px; margin: 15px 0; border: 1px solid #e2e8f0; }
+        .timeline-critical { background: #fff5f5; border-left: 4px solid #e53e3e; }
+        .timeline-high { background: #fffaf0; border-left: 4px solid #d69e2e; }
+        .evidence-box { background: #f0f5ff; border-left: 4px solid #3182ce; padding: 15px; margin: 15px 0; }
+        .auditor-note { background: #faf5ff; border: 1px solid #9f7aea; padding: 15px; font-style: italic; font-size: 9pt; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 8pt; font-weight: bold; text-transform: uppercase; }
+        .badge-red { background: #fed7d7; color: #822727; }
+        .badge-green { background: #c6f6d5; color: #22543d; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SOC2 Compliance Evidence Package</h1>
+        <div style="margin-top: 10px; color: #4a5568;">
+            <strong>Client:</strong> democompany | <strong>Date:</strong> March 12, 2026<br>
+            <strong>Audit Fingerprint:</strong> <span style="font-family: monospace;">sha256-demo-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span>
+        </div>
+    </div>
+
+    <div class="auditor-cover" style="background: white; border: 2px solid #2d3748; padding: 30px; margin-bottom: 40px; border-radius: 8px;">
+        <h2 style="margin-top: 0; border: none; padding: 0;">🧾 To the SOC2 Auditor</h2>
+        <p>This evidence package documents the security controls implemented in <strong>democompany's</strong> database layer.</p>
+        
+        <p><strong>Controls Verified:</strong></p>
+        <ul>
+            <li>CC6.1 - Logical access controls (RLS enabled on all tables)</li>
+            <li>CC6.7 - Restrict logical access (tenant isolation verified via attack simulations)</li>
+        </ul>
+        
+        <p><strong>Evidence Integrity:</strong> Schema fingerprint <code>sha256-demo-e3b0</code> - any change invalidates this audit.</p>
+        
+        <p><strong>Remediation Status:</strong> 100% of SOC2 controls were verified as compliant at audit time. The attached <code>_PRODUCTION.sql</code> brings the environment to 100% compliance.</p>
+        
+        <p>For additional evidence or clarification, contact <strong>auditor@otobrixlabs.com</strong></p>
+    </div>
+
+    <div class="box">
+        <h2>📋 Executive Summary</h2>
+        <p>The democompany database lacks a unified tenant isolation policy, exposing all customer credentials to any authenticated account. This constitutes a direct failure of logical access control controls.</p>
+        <p><strong>Compliance Impact:</strong> Immediate risk of SOC2/GDPR non-compliance for all Enterprise tenants.</p>
+        <div style="margin-top: 10px;">
+            <span class="badge badge-red">
+                FAIL: CRITICAL GAPS
+            </span>
+        </div>
+    </div>
+
+    <h2>🔐 SOC2 Control Matrix</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 15%;">Control</th>
+                <th style="width: 10%;">Status</th>
+                <th style="width: 25%;">Evidence</th>
+                <th style="width: 15%;">Remediation Date</th>
+                <th style="width: 15%;">Verified By</th>
+                <th style="width: 20%;">Gaps</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+                <td><strong>CC6.1</strong><br>Logical Access Controls</td>
+                <td class="status-fail">
+                    ⚠️ FIXED
+                </td>
+                <td>RLS policies are missing on the credentials_entity table.</td>
+                <td>March 12, 2026</td>
+                <td>Otobrix Labs</td>
+                <td>
+                    
+                        <ul style="margin: 0; padding-left: 15px;">
+                            
+                                <li>CRIT-01</li>
+                            
+                                <li>CRIT-03</li>
+                            
+                        </ul>
+                    
+                </td>
+            </tr>
+            
+            <tr>
+                <td><strong>CC6.7</strong><br>Data Isolation</td>
+                <td class="status-fail">
+                    ⚠️ FIXED
+                </td>
+                <td>Transitive trust vulnerabilities allow path traversal between project boundaries.</td>
+                <td>March 12, 2026</td>
+                <td>Otobrix Labs</td>
+                <td>
+                    
+                        <ul style="margin: 0; padding-left: 15px;">
+                            
+                                <li>CRIT-04</li>
+                            
+                                <li>PATH-01</li>
+                            
+                        </ul>
+                    
+                </td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+    <h2>📅 Remediation Roadmap</h2>
+    
+
+    <div class="evidence-box">
+        <h2>📁 Evidence Package Contents</h2>
+        <ul style="columns: 2;">
+            
+            <li><strong>All  policy definitions</strong></li>
+            <li><strong> attack simulation logs</strong></li>
+        </ul>
+    </div>
+
+    <div class="auditor-note">
+        <h2>🧾 For Your SOC2 Auditor</h2>
+        <p></p>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px; font-size: 8pt; color: #a0aec0; border-top: 1px solid #e2e8f0; padding-top: 10px; font-family: 'JetBrains Mono', monospace;">
+        Proprietary assessment generated by Otobrix Security Engine v7.2.0 — Confidential
+    </div>
+</body>
+</html>

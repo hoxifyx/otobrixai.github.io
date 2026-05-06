@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | Otobrix AI</title>
+    <meta name="description" content="Page not found">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+    
+    <!-- Google Fonts - JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Reset & Base */
+        *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:'JetBrains Mono',monospace;background:#0a0a0f;color:#e2e8f0;line-height:1.6;font-size:16px;overflow-x:hidden;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;min-height:100vh}
+        
+        /* Variables */
+        :root{--bg:#0a0a0f;--surface:#12121f;--primary:#00e8d0;--text:#e2e8f0;--text-muted:#94a3b8;--border:rgba(255,255,255,0.08)}
+        
+        /* Typography */
+        h1,h2{font-family:'JetBrains Mono',monospace;font-weight:700;line-height:1.2}h1{font-size:clamp(4rem,15vw,8rem);color:var(--primary);margin-bottom:1rem}h2{font-size:clamp(1.5rem,4vw,2rem);margin-bottom:1.5rem}p{margin-bottom:1.5rem;color:var(--text-muted)}a{color:var(--primary);text-decoration:none;transition:opacity 0.2s}a:hover{opacity:0.8}
+        
+        /* Container */
+        .container{text-align:center;padding:2rem;max-width:600px}
+        
+        /* Buttons */
+        .btn{display:inline-block;padding:1.25rem 2.5rem;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1rem;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;text-align:center;background:var(--primary);color:var(--bg);margin-top:1rem}.btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,232,208,0.3)}
+        
+        /* Logo */
+        .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;margin-bottom:3rem}.primary-color{color:var(--primary)}
+        
+        /* Animation */
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+        .error-code{animation:float 3s ease-in-out infinite}
+        
+        /* Background gradient */
+        .bg-gradient{position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 50% 50%,rgba(0,232,208,0.05)0%,transparent 50%);z-index:-1}
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="container">
+        <div class="logo">Otobrix<span class="primary-color">Labs</span></div>
+        <h1 class="error-code">404</h1>
+        <h2>Page Not Found</h2>
+        <p>The page you're looking for doesn't exist or has been moved.</p>
+        <a href="index.html" class="btn">← Back to Home</a>
+    </div>
+</body>
+</html>

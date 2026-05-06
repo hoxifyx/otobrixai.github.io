@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Otobrix Labs | Security Dashboard v2.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              slate: {
+                950: "#020617",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .gauge-svg {
+        transform: rotate(-90deg);
+      }
+      .gauge-bg {
+        fill: none;
+        stroke: #1e293b;
+        stroke-width: 8;
+      }
+      .gauge-value {
+        fill: none;
+        stroke-width: 8;
+        stroke-linecap: round;
+        transition: stroke-dasharray 1s ease-in-out;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-950 text-slate-200 min-h-screen selection:bg-emerald-500/30"
+  >
+    <div class="max-w-7xl mx-auto px-6 py-12">
+      <!-- Header & Health Score -->
+      <header
+        class="flex flex-col md:flex-row items-center justify-between mb-16 gap-12"
+      >
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-4">
+            <span
+              class="bg-emerald-500/10 text-emerald-400 text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full border border-emerald-500/20"
+            >
+              Confidential Audit Evidence
+            </span>
+            <span class="text-slate-500 text-xs font-medium">
+              ID: democompany_20260324
+            </span>
+          </div>
+          <h1
+            class="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4 lowercase"
+          >
+            LIVE
+            <span class="text-slate-500 font-light">Audit v2.0</span>
+          </h1>
+          <p class="text-lg text-slate-400 max-w-2xl leading-relaxed">
+            <span class="text-white font-medium"
+              >DemoCompany v7.2.0</span
+            >. 
+            Deterministic execution logs and verified isolation proofs are
+            contained within this report. 
+          </p>
+        </div>
+
+        <!-- Health Score Gauge -->
+        <div class="relative w-48 h-48 flex items-center justify-center">
+          <svg class="w-full h-full gauge-svg" viewBox="0 0 100 100">
+            <circle class="gauge-bg" cx="50" cy="50" r="40"></circle>
+            <circle
+              class="gauge-value"
+              cx="50"
+              cy="50"
+              r="40"
+              id="healthScoreCircle"
+              stroke="url(#grad-fail)"
+              stroke-dasharray="0 251.2"
+            ></circle>
+            <defs>
+              <linearGradient id="grad-pass" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop
+                  offset="0%"
+                  style="stop-color: #10b981; stop-opacity: 1"
+                />
+                <stop
+                  offset="100%"
+                  style="stop-color: #34d399; stop-opacity: 1"
+                />
+              </linearGradient>
+              <linearGradient id="grad-fail" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop
+                  offset="0%"
+                  style="stop-color: #f43f5e; stop-opacity: 1"
+                />
+                <stop
+                  offset="100%"
+                  style="stop-color: #fb7185; stop-opacity: 1"
+                />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div
+            class="absolute inset-0 flex flex-col items-center justify-center text-center"
+          >
+            <span class="text-5xl font-black text-white" id="scoreText">0</span>
+            <span
+              class="text-[10px] font-bold tracking-tighter uppercase text-slate-500"
+              >Security Score</span
+            >
+          </div>
+        </div>
+      </header>
+
+      <!-- Technical Disclosure & Capability Matrix -->
+      <section class="mb-16">
+        <div
+          class="bg-slate-900 border border-slate-800 rounded-2xl p-8 relative overflow-hidden"
+        >
+          <div class="absolute top-0 right-0 p-4">
+            <span
+              class="text-[10px] font-bold uppercase tracking-widest text-slate-600"
+              >Verification Integrity: SEC-B-LIVE</span
+            >
+          </div>
+
+          <div class="flex flex-col lg:flex-row gap-12">
+            <div class="flex-1">
+              <h2
+                class="text-xs font-bold uppercase tracking-widest text-emerald-500 mb-6 flex items-center gap-2"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  ></path>
+                </svg>
+                Capability Disclosure
+              </h2>
+              <div class="grid grid-cols-2 gap-4">
+                
+              </div>
+            </div>
+
+            <div class="flex-1">
+              <h2
+                class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6 flex items-center gap-2"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                Technical Methodology
+              </h2>
+              <p class="text-slate-400 text-sm leading-relaxed mb-4">
+                 This report is a **Verified Attestation**.
+                Every finding is backed by deterministic execution logs from a
+                mirrored PostgreSQL environment. Attack vectors were physically
+                simulated to verify policy efficacy. 
+              </p>
+              <div
+                class="p-4 rounded-xl bg-slate-950/50 border border-slate-800"
+              >
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500"
+                  >
+                    <svg
+                      class="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.691.31a2 2 0 00-1.01 1.01l-.31.691a6 6 0 00-.517 3.86l.477 2.387c.121.603.397 1.161.801 1.615l1.615.801a2 2 0 003.86-.517l.477-2.387a2 2 0 00-.547-1.022l-1.615-1.615l-.477-.477z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <p
+                      class="text-white text-xs font-bold uppercase tracking-tight"
+                    >
+                      Integrity Stamp
+                    </p>
+                    <p class="text-slate-500 text-[10px] font-mono">
+                      HASH: 7a68658c...MODE_LIVE
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Executive Summary -->
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+          <h2
+            class="text-xs font-bold uppercase tracking-widest text-rose-500 mb-6 flex items-center gap-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              ></path>
+            </svg>
+            Vulnerabilities Found
+          </h2>
+          <div class="space-y-4">
+            <div class="flex items-start gap-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5"></div>
+              <p class="text-slate-300 text-sm">Missing <code class="text-rose-400">auth.uid()</code> checks on workflow execution payloads.</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5"></div>
+              <p class="text-slate-300 text-sm">Transitive join path from <code class="text-rose-400">public.comments</code> to <code class="text-rose-400">internal.secrets</code>.</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5"></div>
+              <p class="text-slate-300 text-sm">Unencrypted Admin password hashes exposed via unauthenticated API endpoint.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+          <h2
+            class="text-xs font-bold uppercase tracking-widest text-amber-500 mb-6 flex items-center gap-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            Risk to Business
+          </h2>
+            <div class="flex items-start gap-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5"></div>
+              <p class="text-slate-300 text-sm">Total customer base enumeration (BOLA) leads to high churn risk via competitor targeting.</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5"></div>
+              <p class="text-slate-300 text-sm">Secret exposure invalidates SOC2 "Credential Isolation" controls.</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5"></div>
+              <p class="text-slate-300 text-sm">Unauthorized data pivot allows cross-tenant exfiltration without audit logs.</p>
+            </div>
+
+        </div>
+      </section>
+
+      <!-- v7.2.0 Audit Modules Container -->
+      <section id="v62_modules_container" class="mb-16 space-y-8">
+           
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════
+           ATTACK GRAPH ENGINE (v7.2.0) — New Sections Below
+           ═══════════════════════════════════════════════════════ -->
+
+      <!-- Attack Path Discovery -->
+      
+      <section class="mb-16">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl font-bold text-white mb-1">Attack Path Discovery</h2>
+            <p class="text-slate-500 text-sm">BFS traversal from public entry points to sensitive data.</p>
+          </div>
+          <span class="px-3 py-1 bg-rose-600/10 text-rose-400 text-xs font-bold rounded-full border border-rose-500/20">
+            1 Path(s) Found
+          </span>
+        </div>
+        <div class="space-y-4">
+          
+          <div class="bg-slate-900 border border-rose-500/20 rounded-2xl p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Attack Path #1</span>
+              <span class="px-2 py-0.5 bg-rose-500/10 text-rose-400 text-[10px] font-bold rounded border border-rose-500/20">
+                 &nbsp; CVSS 
+              </span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 mb-3 font-mono text-sm">
+              
+              <span class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-slate-300 ">public_vignette</span>
+              <span class="text-rose-500 font-bold">→</span>
+              
+              <span class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-slate-300 ">pivot_table</span>
+              <span class="text-rose-500 font-bold">→</span>
+              
+              <span class="px-2 py-1 rounded bg-slate-800 border border-slate-700 text-slate-300 border-rose-500/50 text-rose-400">credentials_entity</span>
+              
+              
+            </div>
+            <p class="text-slate-400 text-xs">Payload: <code class="text-rose-300"></code></p>
+          </div>
+          
+        </div>
+      </section>
+      
+
+      <!-- Transitive Trust Dashboard (Task 13) -->
+      
+
+      <!-- Isolation Matrix -->
+      <section>
+
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl font-bold text-white mb-1">Isolation Matrix</h2>
+            <p class="text-slate-500 text-sm">
+              Deterministic verification of data boundaries.
+            </p>
+          </div>
+          <button
+            id="filterFailures"
+            class="px-5 py-2.5 bg-rose-600/10 hover:bg-rose-600/20 text-rose-500 text-xs font-bold rounded-lg border border-rose-500/20 transition-all flex items-center gap-2"
+          >
+            <div class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></div>
+            Show Failures Only
+          </button>
+        </div>
+
+        <div
+          class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden"
+        >
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-800/50 border-b border-slate-800">
+                <th
+                  class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400"
+                >
+                  Table / Resource
+                </th>
+                <th
+                  class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400"
+                >
+                  Status
+                </th>
+                <th
+                  class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 w-1/3"
+                >
+                  Verification Evidence
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800">
+              <tr class="matrix-row border-b border-slate-800 bg-slate-900/50 hover:bg-slate-800/30 transition-colors" data-status="CRITICAL FAIL">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
+                    <span class="text-white font-medium text-sm tracking-tight">Credential Vault Isolation</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2 py-0.5 bg-rose-500/10 text-rose-500 text-[10px] font-bold rounded border border-rose-500/20 uppercase tracking-widest">CRITICAL FAIL</span>
+                </td>
+                <td class="px-6 py-4 text-slate-400 text-xs leading-relaxed font-medium">
+                  Any trial user can pull Enterprise secrets.
+                </td>
+              </tr>
+              <tr class="matrix-row border-b border-slate-800 bg-slate-900/50 hover:bg-slate-800/30 transition-colors" data-status="TRANSITIVE LEAK">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]"></div>
+                    <span class="text-white font-medium text-sm tracking-tight">OAuth Token Scoping</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2 py-0.5 bg-rose-500/10 text-rose-500 text-[10px] font-bold rounded border border-rose-500/20 uppercase tracking-widest">TRANSITIVE LEAK</span>
+                </td>
+                <td class="px-6 py-4 text-slate-400 text-xs leading-relaxed font-medium">
+                  Pivot via oauth_refresh_tokens table.
+                </td>
+              </tr>
+              <tr class="matrix-row border-b border-slate-800 bg-slate-900/50 hover:bg-slate-800/30 transition-colors" data-status="UNPROTECTED">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
+                    <span class="text-white font-medium text-sm tracking-tight">API Key Persistence</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2 py-0.5 bg-rose-500/10 text-rose-500 text-[10px] font-bold rounded border border-rose-500/20 uppercase tracking-widest">UNPROTECTED</span>
+                </td>
+                <td class="px-6 py-4 text-slate-400 text-xs leading-relaxed font-medium">
+                  Long-lived keys lack RLS enforcement.
+                </td>
+              </tr>
+              <tr class="matrix-row border-b border-slate-800 bg-slate-900/50 hover:bg-slate-800/30 transition-colors" data-status="BOLA RISK">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
+                    <span class="text-white font-medium text-sm tracking-tight">Execution Payload Privacy</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2 py-0.5 bg-rose-500/10 text-rose-500 text-[10px] font-bold rounded border border-rose-500/20 uppercase tracking-widest">BOLA RISK</span>
+                </td>
+                <td class="px-6 py-4 text-slate-400 text-xs leading-relaxed font-medium">
+                  Workflow outputs readable by all tenants.
+                </td>
+              </tr>
+              <tr class="matrix-row border-b border-slate-800 bg-slate-900/50 hover:bg-slate-800/30 transition-colors" data-status="EXPOSED">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]"></div>
+                    <span class="text-white font-medium text-sm tracking-tight">Staff Directory (Admin)</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2 py-0.5 bg-rose-500/10 text-rose-500 text-[10px] font-bold rounded border border-rose-500/20 uppercase tracking-widest">EXPOSED</span>
+                </td>
+                <td class="px-6 py-4 text-slate-400 text-xs leading-relaxed font-medium">
+                  Admin password hashes accessible via API.
+                </td>
+              </tr>
+              <tr class="matrix-row border-b border-slate-800 bg-slate-900/50 hover:bg-slate-800/30 transition-colors" data-status="FAIL">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
+                    <span class="text-white font-medium text-sm tracking-tight">Client/Org Mapping</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2 py-0.5 bg-rose-500/10 text-rose-500 text-[10px] font-bold rounded border border-rose-500/20 uppercase tracking-widest">FAIL</span>
+                </td>
+                <td class="px-6 py-4 text-slate-400 text-xs leading-relaxed font-medium">
+                  Customer base enumeration possible.
+                </td>
+              </tr>
+
+          </table>
+        </div>
+      </section>
+
+      <footer
+        class="mt-24 pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-6"
+      >
+        <div class="flex items-center gap-3">
+          <span
+            class="text-slate-500 text-xs font-medium uppercase tracking-widest"
+            >Proprietary assessment generated by Otobrix Security Engine v7.2.0 — Confidential</span
+          >
+        </div>
+        <p
+          class="text-slate-600 text-[10px] uppercase font-bold tracking-tighter"
+        >
+          &copy; 2026 Otobrix Labs. All
+          Rights Reserved.
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      // Health Score Animation
+      // 1. Set the Baseline Health Score to 14% (Critical Risk)
+      const targetScore = 14; 
+
+      const circle = document.getElementById("healthScoreCircle");
+      const text = document.getElementById("scoreText");
+
+      let currentScore = 0;
+      const duration = 2000; // Slower animation for "dramatic" effect
+      const interval = 20;
+      const step = targetScore / (duration / interval);
+
+      const animate = setInterval(() => {
+        currentScore += step;
+        if (currentScore >= targetScore) {
+          currentScore = targetScore;
+          clearInterval(animate);
+        }
+        text.innerText = Math.round(currentScore);
+        
+        // Calculate stroke-dasharray (Total circumference is 251.2)
+        const offset = 251.2 - (251.2 * currentScore) / 100;
+        circle.style.strokeDasharray = `${251.2 - offset} 251.2`;
+        
+        // Dynamic color shift: stays red for low scores
+        circle.style.stroke = "#ef4444"; 
+      }, interval);
+
+
+      // Filter Functionality
+      let onlyFailures = false;
+      const rows = document.querySelectorAll(".matrix-row");
+      const filterBtn = document.getElementById("filterFailures");
+
+      filterBtn.addEventListener("click", () => {
+        onlyFailures = !onlyFailures;
+        rows.forEach((row) => {
+          const status = row.getAttribute("data-status");
+          const isFail = status !== "SECURE" && status !== "VERIFIED SECURE";
+          if (onlyFailures && !isFail) {
+            row.classList.add("hidden");
+          } else {
+            row.classList.remove("hidden");
+          }
+        });
+        filterBtn.innerHTML = onlyFailures
+          ? "Show All Scenarios"
+          : '<div class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></div> Show Failures Only';
+      });
+    </script>
+  </body>
+</html>

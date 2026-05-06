@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BOLA + API Surface Risk Map - DemoCompany v7.2.0</title>
+    <style>
+        @page { size: letter; margin: 1.5cm; @bottom-right { content: "API SURFACE - democompany"; font-size: 7pt; color: #999; } }
+        body { font-family: 'Inter', -apple-system, sans-serif; font-size: 9.5pt; line-height: 1.4; color: #1a202c; background: #fff; }
+        .header { text-align: left; border-bottom: 1.5px solid #00e8d0; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end; }
+        h1 { font-size: 16pt; letter-spacing: 0.5px; text-transform: uppercase; color: #1a202c; margin: 0; }
+        .header p { margin: 0; font-size: 8.5pt; color: #718096; }
+        .finding { margin: 16px 0; padding: 12px; border-left: 4px solid; background: #fafafa; border: 1px solid #edf2f7; page-break-inside: avoid; border-radius: 4px; }
+        .finding.CRITICAL { border-left-color: #e53e3e; background: #fff5f5; }
+        .finding.WARNING { border-left-color: #d69e2e; background: #fffaf0; }
+        .finding.INFO { border-left-color: #3182ce; background: #ebf8ff; }
+        .finding-header { font-weight: bold; margin-bottom: 8px; font-size: 10.5pt; display: flex; justify-content: space-between; }
+        .finding-tag { font-size: 7pt; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; background: #2d3748; color: #fff; }
+        .business-impact { margin-top: 8px; padding: 10px; background: white; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 9pt; }
+        .remediation { background: #0f172a; color: #00e8d0; padding: 12px; font-family: 'JetBrains Mono', monospace; font-size: 8.5pt; border-radius: 4px; margin-top: 8px; border: 1px solid #1e293b; }
+        .endpoint-map { margin: 25px 0; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .endpoint-row { display: flex; gap: 10px; margin-bottom: 6px; font-family: 'JetBrains Mono', monospace; font-size: 8.5pt; }
+        .method { font-weight: bold; color: #3182ce; width: 45px; }
+        .path { color: #4a5568; }
+        .risk-level { margin-left: auto; font-weight: bold; }
+        .risk-high { color: #e53e3e; }
+        .risk-med { color: #d69e2e; }
+        .risk-low { color: #38a169; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Module 10: API Surface Risk Map (v7.2.0)</h1>
+        <p><strong>Client:</strong> DemoCompany | <strong>Date:</strong> March 24, 2026</p>
+    </div>
+
+    <section>
+        <h2>Executive Summary</h2>
+        <p>This report identifies risks at the API Gateway and Edge Function layers of the architecture. While Row-Level Security (RLS) provides the final line of defense, vulnerabilities at the API surface can lead to BOLA/IDOR attacks, JWT tampering, and unauthorized access to Edge Functions.</p>
+    </section>
+
+    <div class="endpoint-map">
+        <h3>Mapped API Surface (Supabase REST)</h3>
+        <div class="endpoint-row">
+            <span class="method">GET</span>
+            <span class="path">/rest/v1/profiles</span>
+            <span class="risk-level risk-low">Verified (RLS Active)</span>
+        </div>
+        <div class="endpoint-row">
+            <span class="method">PATCH</span>
+            <span class="path">/rest/v1/orders?id=eq.123</span>
+            <span class="risk-level risk-high">BOLA Vulnerability</span>
+        </div>
+        <div class="endpoint-row">
+            <span class="method">POST</span>
+            <span class="path">/functions/v1/auth-webhook</span>
+            <span class="risk-level risk-high">Service Role Exposure</span>
+        </div>
+        <div class="endpoint-row">
+            <span class="method">GET</span>
+            <span class="path">/rest/v1/internal_analytics</span>
+            <span class="risk-level risk-med">JWT Bypass Possible</span>
+        </div>
+    </div>
+
+    <div class="finding CRITICAL">
+        <div class="finding-header">
+            <span>[CRITICAL] Broken Object Level Authorization (BOLA)</span>
+            <span class="finding-tag">Endpoint: /orders</span>
+        </div>
+        <p>The <code>PATCH /orders</code> endpoint accepts a UUID via query param. Our engine successfully modified an order belonging to <code>tenant_b</code> using a <code>tenant_a</code> JWT token.</p>
+        <div class="business-impact"><strong>Strategic Impact:</strong> Unauthorized modification of orders across tenant boundaries. Potential for financial fraud and data corruption.</div>
+        <div class="remediation">-- REMEDIATION: Wrap update in a secure function or use RLS with subqueries
+ALTER POLICY "Users can update their own orders" ON orders 
+FOR UPDATE USING (auth.uid() = user_id);</div>
+    </div>
+
+    <div class="finding CRITICAL">
+        <div class="finding-header">
+            <span>[CRITICAL] Edge Function Service-Role Exposure</span>
+            <span class="finding-tag">Function: process-payment</span>
+        </div>
+        <p>Edge function <code>process-payment</code> logs include unmasked <code>service_role</code> keys. Our engine intercepted these keys during simulation, allowing full database bypass.</p>
+        <div class="business-impact"><strong>Strategic Impact:</strong> Complete database takeover. An attacker with this key can bypass all RLS policies.</div>
+        <div class="remediation">// REMEDIATION: Mask sensitive keys in logs
+const supabase = createClient(
+  Deno.env.get('SUPABASE_URL')!,
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')! // DO NOT LOG THIS
+)</div>
+    </div>
+
+    <div class="finding WARNING">
+        <div class="finding-header">
+            <span>[WARNING] JWT Claim Tampering (Alg: None)</span>
+            <span class="finding-tag">Infrastructure</span>
+        </div>
+        <p>The application accepts JWTs with <code>"alg": "none"</code> in certain staging configurations. This allows an attacker to forge identity claims.</p>
+        <div class="business-impact"><strong>Strategic Impact:</strong> Identity spoofing. Attackers can masquerade as any user by removing the signature.</div>
+        <div class="remediation">-- REMEDIATION: Ensure GoTrue/Auth is configured to reject 'none' algorithm
+-- Verify JWT Secret rotation and strength.</div>
+    </div>
+
+    <div class="finding INFO">
+        <div class="finding-header">
+            <span>[INFO] Verbose API Error Responses</span>
+            <span class="finding-tag">Endpoint: /rest/v1/*</span>
+        </div>
+        <p>API returns detailed PostgREST error messages including table column names and hints. This facilitates schema mapping for attackers.</p>
+        <div class="business-impact"><strong>Strategic Impact:</strong> Low-risk information disclosure that aids in more targeted attacks.</div>
+        <div class="remediation">-- REMEDIATION: Use a custom middleware or proxy to sanitize API error responses.</div>
+    </div>
+
+    <p style="text-align: center; color: #94a3b8; font-size: 8pt; margin-top: 50px; font-family: 'JetBrains Mono', monospace;">
+        Proprietary assessment generated by Otobrix Security Engine v7.2.0 — Confidential
+    </p>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Otobrix Labs</title>
+    <meta name="description" content="Terms of Service for Otobrix Labs">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230a0a0f%22/><circle cx=%2250%22 cy=%2250%22 r=%2225%22 fill=%22none%22 stroke=%22%2300e8d0%22 stroke-width=%228%22/><path d=%22M50 30 L50 70 M30 50 L70 50%22 stroke=%22%2300e8d0%22 stroke-width=%228%22 stroke-linecap=%22round%22/></svg>">
+    
+    <style>
+        /* Reset & Base */
+        *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:'JetBrains Mono',monospace;background:#0a0a0f;color:#e2e8f0;line-height:1.6;font-size:16px;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+        
+        /* Variables */
+        :root{--bg:#0a0a0f;--surface:#12121f;--primary:#00e8d0;--text:#e2e8f0;--text-muted:#94a3b8;--border:rgba(255,255,255,0.08)}
+        
+        /* Typography */
+        h1,h2,h3,h4{font-family:'JetBrains Mono',monospace;font-weight:700;line-height:1.2;margin-bottom:1rem}h1{font-size:clamp(2rem,5vw,3rem)}h2{font-size:clamp(1.5rem,4vw,2rem);margin-bottom:1.5rem;margin-top:3rem}h3{font-size:1.25rem;margin-top:2rem}p{margin-bottom:1.5rem}a{color:var(--primary);text-decoration:none;transition:opacity 0.2s}a:hover{opacity:0.8}
+        
+        /* Utilities */
+        .container{width:100%;max-width:900px;margin:0 auto;padding:0 1.5rem}.section{padding:5rem 0}.primary-color{color:var(--primary)}
+        
+        /* Logo */
+        .logo{font-family:'Inter',sans-serif;font-weight:800;font-size:1.8rem;letter-spacing:-0.02em;color:#fff;text-decoration:none}
+        .nav-container{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 0}
+        .header{border-bottom:1px solid var(--border)}
+        
+        /* Content */
+        .content{padding:3rem 0}
+        .content ul{margin-left:1.5rem;margin-bottom:1.5rem;color:var(--text-muted)}
+        .content li{margin-bottom:0.5rem}
+        .content strong{color:var(--text)}
+        
+        /* Footer */
+        .footer{border-top:1px solid var(--border);padding:60px 0 40px;margin-top:80px;color:var(--text-muted)}
+        .footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;margin-bottom:40px;text-align:left}
+        .footer-col h5{color:#fff;margin-bottom:16px;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.05em}
+        .footer-links{list-style:none;padding:0}
+        .footer-links li{margin-bottom:10px}
+        .footer-links a{color:var(--text-muted);text-decoration:none;font-size:0.85rem;transition:color 0.2s}
+        .footer-links a:hover{color:var(--primary)}
+        .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:30px;border-top:1px solid var(--border);font-size:0.8rem}
+        .nav-links{display:flex;gap:20px}.nav-links a{color:var(--text-muted);font-size:0.9rem}
+
+        /* Responsive */
+        @media(max-width:768px){
+            .footer-grid{grid-template-columns:1fr;text-align:center;gap:32px}
+            .footer-brand p{margin:0 auto}
+            .nav-container{flex-direction:column;gap:16px}
+            .footer-bottom{flex-direction:column;gap:16px;text-align:center}
+        }
+        @media(max-width:640px){.section{padding:3rem 0}.container{padding:0 1.25rem}}
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="header" role="banner">
+        <div class="container nav-container">
+            <a href="index.html" class="logo" aria-label="Otobrix Labs">Otobrix<span class="primary-color">Labs</span></a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="sample-vault.html">Vault</a>
+                <a href="demo.html">Demo</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="content">
+        <div class="container">
+            <h1>Terms of Service</h1>
+            <p style="color:var(--text-muted)">Last Updated: January 20, 2026</p>
+            
+            <h2>1. Agreement to Terms</h2>
+            <p>By accessing or using Otobrix Labs services, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you may not use our services.</p>
+            
+            <h2>2. Services Description</h2>
+            <p>Otobrix Labs provides database security auditing services, including:</p>
+            <ul>
+                <li>Deterministic Row Level Security (RLS) verification</li>
+                <li>Multi-tenant isolation boundary auditing</li>
+                <li>PII/HIPAA compliance technical gap analysis</li>
+                <li>Remediation SQL patch design</li>
+            </ul>
+            
+            <h2>3. Service Agreements</h2>
+            
+            <h3>3.1 Audit Services</h3>
+            <p>Audit services are provided on a fixed-fee basis. Audits include analysis and recommendations but do not include implementation unless separately agreed.</p>
+            
+            <h3>3.2 Implementation Services</h3>
+            <p>Implementation services are governed by separate service agreements that specify:</p>
+            <ul>
+                <li>Scope of work and deliverables</li>
+                <li>Timeline and milestones</li>
+                <li>Payment terms</li>
+                <li>Support and maintenance provisions</li>
+            </ul>
+            
+            <h3>3.3 Ongoing Services</h3>
+            <p>Monthly retainer services require 30 days written notice for cancellation. Fees are non-refundable for services already rendered.</p>
+            
+            <h2>4. Client Responsibilities</h2>
+            <p>Clients agree to:</p>
+            <ul>
+                <li>Provide timely access to necessary systems and data</li>
+                <li>Respond to requests for information within reasonable timeframes</li>
+                <li>Maintain appropriate backups of their data</li>
+                <li>Comply with all applicable laws and platform terms of service</li>
+                <li>Not use services for illegal or fraudulent purposes</li>
+            </ul>
+            
+            <h2>5. Payment Terms</h2>
+            <ul>
+                <li><strong>Audit Fees:</strong> Due upon engagement, credited toward implementation if client proceeds within 90 days</li>
+                <li><strong>Implementation Fees:</strong> 50% upfront, 50% upon completion unless otherwise agreed</li>
+                <li><strong>Monthly Fees:</strong> Due on the 1st of each month, payable via invoice</li>
+                <li><strong>Late Payments:</strong> Subject to 1.5% monthly interest charge</li>
+            </ul>
+            
+            <h2>6. Intellectual Property</h2>
+            
+            <h3>6.1 Client Ownership</h3>
+            <p>Upon full payment, clients own all custom remediation SQL patches and configuration guidance created specifically for their environment.</p>
+            
+            <h3>6.2 Retained Rights</h3>
+            <p>Otobrix AI retains rights to:</p>
+            <ul>
+                <li>General methodologies and approaches</li>
+                <li>Reusable code components and templates</li>
+                <li>Anonymized aggregate performance and vulnerability data</li>
+            </ul>
+            
+            <h2>7. Confidentiality</h2>
+            <p>Both parties agree to maintain confidentiality of proprietary information. This obligation survives termination of services.</p>
+            
+            <h2>8. Warranties and Disclaimers</h2>
+            
+            <h3>8.1 Service Warranty</h3>
+            <p>We warrant that services will be performed in a professional manner consistent with industry standards.</p>
+            
+            <h3>8.2 Results Disclaimer</h3>
+            <p>While we strive for optimal results, we do not guarantee specific revenue recovery percentages or business outcomes. Results depend on many factors outside our control.</p>
+            
+            <h3>8.3 Third-Party Services</h3>
+            <p>We are not responsible for the performance, availability, or changes to third-party services (Supabase, AWS, Postgres contributors, etc.).</p>
+            
+            <h2>9. Limitation of Liability</h2>
+            <p>Our total liability for any claim arising from services shall not exceed the fees paid for the specific service giving rise to the claim. We are not liable for indirect, consequential, or punitive damages.</p>
+            
+            <h2>10. Indemnification</h2>
+            <p>Clients agree to indemnify Otobrix AI against claims arising from:</p>
+            <ul>
+                <li>Client's use of services in violation of laws or platform terms</li>
+                <li>Client's data or content</li>
+                <li>Breach of these terms by client</li>
+            </ul>
+            
+            <h2>11. Termination</h2>
+            
+            <h3>11.1 By Client</h3>
+            <p>Clients may terminate ongoing services with 30 days written notice. Fees for current month are non-refundable.</p>
+            
+            <h3>11.2 By Otobrix AI</h3>
+            <p>We may terminate services immediately if client:</p>
+            <ul>
+                <li>Fails to pay invoices within 30 days</li>
+                <li>Breaches these terms</li>
+                <li>Engages in abusive or illegal conduct</li>
+            </ul>
+            
+            <h3>11.3 Effect of Termination</h3>
+            <p>Upon termination, client retains access to delivered work products. We will provide reasonable transition assistance for 30 days.</p>
+            
+            <h2>12. Modifications to Terms</h2>
+            <p>We may modify these terms with 30 days notice to active clients. Continued use of services constitutes acceptance of modified terms.</p>
+            
+            <h2>13. Governing Law</h2>
+            <p>These terms are governed by the laws of our jurisdiction of incorporation. Disputes shall be resolved through good-faith negotiation.</p>
+            
+            <h2>14. Entire Agreement</h2>
+            <p>These terms, together with any service-specific agreements, constitute the entire agreement between parties and supersede all prior understandings.</p>
+            
+            <h2>15. Contact</h2>
+            <p>For questions about these terms:</p>
+            <ul>
+                <li><strong>Email:</strong> <a href="mailto:auditor@otobrixai.com">auditor@otobrixai.com</a></li>
+            </ul>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+          <div class="footer-grid">
+            <div class="footer-brand">
+              <span class="brand-logo">Otobrix Labs</span>
+              <p>Deterministic Security Verification for PostgreSQL & Supabase Architecture.</p>
+            </div>
+            
+            <div class="footer-links">
+              <h4>Platform</h4>
+                <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="sample-vault.html">Forensic Vault</a></li>
+                <li><a href="demo.html">Simulation Lab</a></li>
+              </ul>
+            </div>
+        
+            <div class="footer-links">
+              <h4>Engagement</h4>
+              <ul>
+                <li><a href="intake.html">Audit Intake Portal</a></li>
+                <li><a href="#" 
+                   data-cal-link="otobrixlabs/technical-architecture-review" 
+                   data-cal-namespace="technical-architecture-review"
+                   data-cal-config='{"layout":"month_view"}'>Architecture Review ($2,800)</a></li>
+              </ul>
+            </div>
+          </div>
+        
+          <div class="footer-bottom">
+            <p>© 2026 Otobrix Labs | Secure Infrastructure Verification</p>
+            <div class="legal-links">
+              <a href="terms.html">Terms</a>
+              <a href="privacy.html">Privacy</a>
+            </div>
+          </div>
+        </div>
+    </footer>
+    <!-- Cal element-click embed code begins -->
+    <script type="text/javascript">
+      (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+    Cal("init", "technical-architecture-review", {origin:"https://app.cal.com"});
+
+    Cal.ns["technical-architecture-review"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+    </script>
+    <!-- Cal element-click embed code ends -->
+</body>
+</html>

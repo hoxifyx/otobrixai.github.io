@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>democompany - Security Audit v7.2.0</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+      mermaid.initialize({ startOnLoad: true, theme: "dark" });
+    </script>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --surface-light: #334155;
+        --text: #f8fafc;
+        --text-muted: #94a3b8;
+        --primary: #38bdf8;
+        --success: #22c55e;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --border: #334155;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+      }
+      header {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 2rem;
+        margin-bottom: 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+      h1,
+      h2,
+      h3 {
+        color: var(--primary);
+      }
+      .section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        padding: 2rem;
+        margin-bottom: 3rem;
+      }
+      .matrix-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+      .matrix-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .status-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .dot-pass {
+        background: var(--success);
+        box-shadow: 0 0 8px var(--success);
+      }
+      .dot-fail {
+        background: var(--danger);
+        box-shadow: 0 0 8px var(--danger);
+      }
+      .dot-warn {
+        background: var(--warning);
+        box-shadow: 0 0 8px var(--warning);
+      }
+
+      .finding {
+        border-left: 4px solid var(--primary);
+        padding-left: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      .finding.critical {
+        border-left-color: var(--danger);
+      }
+      .finding.warning {
+        border-left-color: var(--warning);
+      }
+
+      .attack-chain {
+        background: #000;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin: 1.5rem 0;
+      }
+      .node {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .node.entry {
+        background: rgba(56, 189, 248, 0.2);
+        color: var(--primary);
+        border: 1px solid var(--primary);
+      }
+      .node.payload {
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--danger);
+        border: 1px solid var(--danger);
+      }
+
+      pre {
+        background: #000;
+        color: #e2e8f0;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+        font-family: "Fira Code", monospace;
+        font-size: 0.85rem;
+      }
+      .badge {
+        padding: 0.2rem 0.6rem;
+        border-radius: 9999px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .badge-danger {
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--danger);
+      }
+      
+      /* Evidence UI Styles */
+      .evidence-location {
+        background: #020617;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 12px;
+        margin: 15px 0;
+        font-family: 'Fira Code', monospace;
+      }
+      .location-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+      .location-file {
+        color: var(--primary);
+        font-weight: 600;
+      }
+      .location-line {
+        color: var(--warning);
+      }
+      .location-snippet {
+        background: transparent;
+        padding: 0;
+        color: #e2e8f0;
+        font-size: 12px;
+        overflow-x: auto;
+        margin: 0;
+      }
+      .finding-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .finding-id {
+        background: var(--surface);
+        color: var(--primary);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-family: 'Fira Code', monospace;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid var(--border);
+      }
+      .confidence-badge {
+        background: var(--surface);
+        color: #a78bfa;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid var(--border);
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div>
+          <div
+            style="
+              font-size: 0.8rem;
+              font-weight: 800;
+              color: var(--danger);
+              margin-bottom: 0.5rem;
+            "
+          >
+            CONFIDENTIAL INTERNAL USE ONLY
+          </div>
+          <h1 style="margin: 0">Security Audit Report v7.2</h1>
+          <div style="color: var(--text-muted)">
+             | STRATEGIC-20260312-001
+          </div>
+        </div>
+        <div style="text-align: right">
+          <div style="font-size: 0.8rem; color: var(--text-muted)">
+            Audit Date
+          </div>
+          <div style="font-weight: 600">March 12, 2026</div>
+        </div>
+      </header>
+
+      <!-- Section 1: Executive Summary -->
+      <div class="section">
+        <h2>1. Executive Summary</h2>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+          "
+        >
+          <div
+            style="text-align: center; border-right: 1px solid var(--border)"
+          >
+            <div style="font-size: 2.5rem; font-weight: 800">
+              14%
+            </div>
+            <div
+              style="
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--text-muted);
+              "
+            >
+              Risk Managed
+            </div>
+          </div>
+          <div
+            style="text-align: center; border-right: 1px solid var(--border)"
+          >
+            <div style="font-size: 2.5rem; font-weight: 800">
+              22%
+            </div>
+            <div
+              style="
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--text-muted);
+              "
+            >
+              Verification Coverage
+            </div>
+          </div>
+          <div style="text-align: center">
+            <div style="font-size: 2.5rem; font-weight: 800">
+              6
+            </div>
+            <div
+              style="
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: var(--text-muted);
+              "
+            >
+              Critical Risks
+            </div>
+          </div>
+        </div>
+        <div
+          style="
+            background: var(--surface-light);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--success);
+          "
+        >
+          <strong>Strategic Advisory:</strong> "The audit identified systematic isolation failures across six core credential and execution tables. The primary risk is a <strong>Transitive Trust Breach</strong>, where unsecured 'public' or 'log' tables act as bridgeheads to pivot into encrypted tenant secrets. Immediate Tier-2 Hardening of the RLS layer is required to prevent platform-wide credential harvesting."
+        </div>
+        <div style="margin-top: 1.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); padding: 1rem; border-radius: 0.5rem; border-left: 4px solid var(--danger); color: var(--text);">
+          <strong style="color: var(--danger);">Most Dangerous Finding:</strong> The <code>credentials_entity</code> leak means any Trial user can harvest all production API keys for every Enterprise customer. This is a platform-wide credential compromise waiting to happen.
+        </div>
+      </div>
+
+      <!-- Section 2: Threat Model -->
+      <div class="section">
+        <h2>2. Threat Model</h2>
+        <p>
+          This audit assumes a "compromised user" or "malicious tenant" profile.
+          We evaluate the efficacy of Row-Level Security (RLS) and
+          database-level functions to prevent cross-tenant data access (BOLA)
+          and unauthorized privilege escalation.
+        </p>
+        <p>
+          <strong>Primary Attack Surface:</strong> 0
+          database tables exposed via PostgREST/Supabase API.
+        </p>
+      </div>
+
+      <!-- Section 3: Attack Graph -->
+      <div class="section">
+        <h2>3. Attack Graph</h2>
+        <div class="mermaid">graph LR
+  A[Trial User] --|Direct API Call|--> B(credentials_entity)
+  B --|No RLS|--> C[Enterprise Stripe Keys]
+  B --|No RLS|--> D[Enterprise OpenAI Keys]
+  C & D --> E[PLATFORM COMPROMISE]
+  
+  style E fill:#ef4444,stroke:#ef4444,color:#fff
+  style A fill:#334155,stroke:#38bdf8,color:#38bdf8</div>
+        <div class="attack-chain">
+          <div class="node entry">Trial account</div>
+          <div style="color: var(--text-muted)">→</div>
+          <div
+            class="node"
+            style="
+              background: rgba(239, 68, 68, 0.2);
+              color: var(--danger);
+              border: 1px solid var(--danger);
+            "
+          >
+            API Exploitation
+          </div>
+          <div style="color: var(--text-muted)">→</div>
+          <div class="node payload">Enterprise Secrets</div>
+        </div>
+      </div>
+
+      <!-- Section 4: Critical Findings -->
+      <div class="section">
+        <h2>4. Critical Findings</h2>
+        
+        <div class="finding critical">
+          <h3 class="finding-title" style="margin: 0">
+            <span class="finding-id">CUSTOM</span>
+            
+            <span class="badge badge-danger">Critical</span>
+            
+          </h3>
+          <p style="font-weight: 600; margin-top: 0.5rem">
+            The platform's central credential vault — `credentials_entity` — stores every third-party integration secret for every tenant: Stripe payment keys, OpenAI API keys, Slack bot tokens, and webhook signing secrets. A user with a standard Trial account can call the database API directly and retrieve the complete credential payload for every Enterprise organization on the platform in a single request.
+          </p>
+          
+          
+
+          <div style="font-size: 0.9rem; margin: 1rem 0">
+            <div
+              style="
+                color: var(--text-muted);
+                text-transform: uppercase;
+                font-size: 0.7rem;
+                font-weight: 800;
+                letter-spacing: 1px;
+              "
+            >
+              Business Impact
+            </div>
+            
+          </div>
+          <div
+            style="
+              background: rgba(0, 0, 0, 0.3);
+              padding: 1rem;
+              border-radius: 0.5rem;
+            "
+          >
+            <strong>Remediation:</strong> Restrict credential access to the owning project and its explicitly granted members. The fix uses `credentials_entity.projectId` → `project.ownedById` to enforce ownership.
+          </div>
+        </div>
+        
+        <div class="finding critical">
+          <h3 class="finding-title" style="margin: 0">
+            <span class="finding-id">CUSTOM</span>
+            
+            <span class="badge badge-danger">Critical</span>
+            
+          </h3>
+          <p style="font-weight: 600; margin-top: 0.5rem">
+            When users connect external services (Google, GitHub, HubSpot, Slack) to their democompany workflows, the platform stores their live OAuth bearer tokens in `oauth_access_tokens` and their persistent refresh tokens in `oauth_refresh_tokens`. Both tables have no access controls. Any authenticated user can retrieve the current session token for any connected account across any organization.
+          </p>
+          
+          
+
+          <div style="font-size: 0.9rem; margin: 1rem 0">
+            <div
+              style="
+                color: var(--text-muted);
+                text-transform: uppercase;
+                font-size: 0.7rem;
+                font-weight: 800;
+                letter-spacing: 1px;
+              "
+            >
+              Business Impact
+            </div>
+            
+          </div>
+          <div
+            style="
+              background: rgba(0, 0, 0, 0.3);
+              padding: 1rem;
+              border-radius: 0.5rem;
+            "
+          >
+            <strong>Remediation:</strong> Restrict OAuth token visibility to the token's owner via `userId` column.
+          </div>
+        </div>
+        
+        <div class="finding critical">
+          <h3 class="finding-title" style="margin: 0">
+            <span class="finding-id">CUSTOM</span>
+            
+            <span class="badge badge-danger">Critical</span>
+            
+          </h3>
+          <p style="font-weight: 600; margin-top: 0.5rem">
+            democompany issues long-lived API keys for programmatic platform access. These keys are stored in `user_api_keys` with no row-level restrictions. Unlike session tokens, API keys do not expire by default and are not invalidated by a password reset — making them the most dangerous credential type on the platform. All keys for all users are accessible via a single authenticated REST call.
+          </p>
+          
+          
+
+          <div style="font-size: 0.9rem; margin: 1rem 0">
+            <div
+              style="
+                color: var(--text-muted);
+                text-transform: uppercase;
+                font-size: 0.7rem;
+                font-weight: 800;
+                letter-spacing: 1px;
+              "
+            >
+              Business Impact
+            </div>
+            
+          </div>
+          <div
+            style="
+              background: rgba(0, 0, 0, 0.3);
+              padding: 1rem;
+              border-radius: 0.5rem;
+            "
+          >
+            <strong>Remediation:</strong> Restrict API key visibility to the key's owner only.
+          </div>
+        </div>
+        
+        <div class="finding critical">
+          <h3 class="finding-title" style="margin: 0">
+            <span class="finding-id">CUSTOM</span>
+            
+            <span class="badge badge-danger">Critical</span>
+            
+          </h3>
+          <p style="font-weight: 600; margin-top: 0.5rem">
+            Every time a workflow runs on the platform, its full input and output data is persisted in `execution_entity` (run metadata) and `execution_data` (raw payload). These tables contain everything that has ever been processed by any workflow on the platform — customer records passed to AI nodes, financials from CRM integrations, and any files uploaded through webhook triggers. Both tables are fully readable by any authenticated user.
+          </p>
+          
+          
+
+          <div style="font-size: 0.9rem; margin: 1rem 0">
+            <div
+              style="
+                color: var(--text-muted);
+                text-transform: uppercase;
+                font-size: 0.7rem;
+                font-weight: 800;
+                letter-spacing: 1px;
+              "
+            >
+              Business Impact
+            </div>
+            
+          </div>
+          <div
+            style="
+              background: rgba(0, 0, 0, 0.3);
+              padding: 1rem;
+              border-radius: 0.5rem;
+            "
+          >
+            <strong>Remediation:</strong> Execution records must be scoped to the owning project via `execution_entity.workflowId` → `workflow_entity.projectId` → `project.ownedById`.
+          </div>
+        </div>
+        
+        <div class="finding critical">
+          <h3 class="finding-title" style="margin: 0">
+            <span class="finding-id">CUSTOM</span>
+            
+            <span class="badge badge-danger">Critical</span>
+            
+          </h3>
+          <p style="font-weight: 600; margin-top: 0.5rem">
+            Both the end-user directory (`user`) and internal staff directory (`admin_users`) are readable by any authenticated platform user. The `admin_users` table contains hashed passwords, email addresses, role assignments, and 2FA configuration for all internal democompany staff. The `user` table contains the same data for every end-user on the platform.
+          </p>
+          
+          
+
+          <div style="font-size: 0.9rem; margin: 1rem 0">
+            <div
+              style="
+                color: var(--text-muted);
+                text-transform: uppercase;
+                font-size: 0.7rem;
+                font-weight: 800;
+                letter-spacing: 1px;
+              "
+            >
+              Business Impact
+            </div>
+            
+          </div>
+          <div
+            style="
+              background: rgba(0, 0, 0, 0.3);
+              padding: 1rem;
+              border-radius: 0.5rem;
+            "
+          >
+            <strong>Remediation:</strong> Users should only access their own record. Admin table must be completely removed from the public API — it should only be accessible via `service_role` in backend code.
+          </div>
+        </div>
+        
+        <div class="finding critical">
+          <h3 class="finding-title" style="margin: 0">
+            <span class="finding-id">CUSTOM</span>
+            
+            <span class="badge badge-danger">Critical</span>
+            
+          </h3>
+          <p style="font-weight: 600; margin-top: 0.5rem">
+            The `client_users` table is the master directory that maps every user to their organization. It contains email addresses, client IDs, role names, and account status. With no access controls, any Trial account can enumerate democompany's entire customer base — including user counts per organization, which reveals which clients are heavy users of the platform.
+          </p>
+          
+          
+
+          <div style="font-size: 0.9rem; margin: 1rem 0">
+            <div
+              style="
+                color: var(--text-muted);
+                text-transform: uppercase;
+                font-size: 0.7rem;
+                font-weight: 800;
+                letter-spacing: 1px;
+              "
+            >
+              Business Impact
+            </div>
+            
+          </div>
+          <div
+            style="
+              background: rgba(0, 0, 0, 0.3);
+              padding: 1rem;
+              border-radius: 0.5rem;
+            "
+          >
+            <strong>Remediation:</strong> Restrict `client_users` to members of the same organization by matching the requesting user's own `clientId`.
+          </div>
+        </div>
+         
+      <!-- Section 4.5: High & Medium Findings -->
+      <div class="section">
+        <h2>4.5 High & Medium Findings</h2>
+         
+        <div class="finding warning">
+          <h3 class="finding-title" style="margin: 0">
+            <span class="finding-id">V-MED-01</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: var(--warning);">Medium</span>
+          </h3>
+          <p style="font-weight: 600; margin-top: 0.5rem">
+            The <code>user_profiles</code> table correctly enforces RLS for ownership, but the <code>raw_metadata</code> column is included in the default public SELECT policy. This exposes internal feature flags, subscription tiers, and billing lifecycle status to any user who can view a profile.
+          </p>
+          <div
+            style="
+              background: rgba(0, 0, 0, 0.3);
+              padding: 1rem;
+              border-radius: 0.5rem;
+              margin-top: 1rem;
+            "
+          >
+            <strong>Remediation:</strong> Implement a view or narrow policy that excludes the <code>raw_metadata</code> column from public access.
+          </div>
+        </div>
+
+        <div class="finding warning">
+          <h3 class="finding-title" style="margin: 0">
+            <span class="finding-id">V-MED-02</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: var(--warning);">Medium</span>
+          </h3>
+          <p style="font-weight: 600; margin-top: 0.5rem">
+            While core entity tables use UUIDs, the <code>audit_logs</code> and <code>system_events</code> tables use sequential <code>BIGINT</code> primary keys. A malicious actor can use "ID Sampling" to estimate total platform activity, daily growth rates, and customer volume with high precision.
+          </p>
+          <div
+            style="
+              background: rgba(0, 0, 0, 0.3);
+              padding: 1rem;
+              border-radius: 0.5rem;
+              margin-top: 1rem;
+            "
+          >
+            <strong>Remediation:</strong> Transition event logging to UUID v7 or ULIDs to prevent business intelligence leaking.
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Security Verification Matrix -->
+      <div class="section">
+        <h2>5. 16-Point Verification Matrix</h2>
+        <p>Deterministic checks performed against the analyzed schema:</p>
+        <div class="matrix-grid">
+          <div class="matrix-card">
+            <div class="status-dot dot-fail"></div>
+            <div>
+              <div style="font-size: 0.8rem; font-weight: 700;">V001</div>
+              <div style="font-size: 0.7rem; color: var(--text-muted);">Direct tenant_id Enforcement</div>
+            </div>
+          </div>
+          <div class="matrix-card">
+            <div class="status-dot dot-fail"></div>
+            <div>
+              <div style="font-size: 0.8rem; font-weight: 700;">V004</div>
+              <div style="font-size: 0.7rem; color: var(--text-muted);">Cross-Tenant Join Path Isolation</div>
+            </div>
+          </div>
+          <div class="matrix-card">
+            <div class="status-dot dot-pass"></div>
+            <div>
+              <div style="font-size: 0.8rem; font-weight: 700;">V002</div>
+              <div style="font-size: 0.7rem; color: var(--text-muted);">JWT sub Claim Validation</div>
+            </div>
+          </div>
+          <div class="matrix-card">
+            <div class="status-dot dot-warn"></div>
+            <div>
+              <div style="font-size: 0.8rem; font-weight: 700;">V009</div>
+              <div style="font-size: 0.7rem; color: var(--text-muted);">Service Role Bypass Prevention</div>
+            </div>
+          </div>
+          <div class="matrix-card">
+            <div class="status-dot dot-fail"></div>
+            <div>
+              <div style="font-size: 0.8rem; font-weight: 700;">V005</div>
+              <div style="font-size: 0.7rem; color: var(--text-muted);">Leakage via Recursive Policies</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 6: Design Risks -->
+      <div class="section">
+        <h2>6. Design Risks (Architectural)</h2>
+         
+        <p>No significant architectural risks identified.</p>
+        
+      </div>
+
+      <!-- Section 7: Remediation Plan -->
+      <div class="section">
+        <h2>7. Remediation Plan (3-Tier)</h2>
+        <div
+          style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem"
+        >
+          <div
+            style="
+              background: var(--surface-light);
+              padding: 1rem;
+              border-radius: 0.5rem;
+            "
+          >
+            <h4 style="margin-top: 0; color: var(--success)">Tier 1: Audit</h4>
+            <p style="font-size: 0.8rem">
+              Log only. No traffic blocking. Risk measurement phase.
+            </p>
+          </div>
+          <div
+            style="
+              background: var(--surface-light);
+              padding: 1rem;
+              border-radius: 0.5rem;
+            "
+          >
+            <h4 style="margin-top: 0; color: var(--warning)">Tier 2: Harden</h4>
+            <p style="font-size: 0.8rem">
+              Enforce RLS on all sensitive tables. Reject non-tenant traffic.
+            </p>
+          </div>
+          <div
+            style="
+              background: var(--surface-light);
+              padding: 1rem;
+              border-radius: 0.5rem;
+            "
+          >
+            <h4 style="margin-top: 0; color: var(--primary)">
+              Tier 3: Production
+            </h4>
+            <p style="font-size: 0.8rem">
+              Full cryptographic verification of all access paths.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 8: SQL Patch Examples -->
+      <div class="section">
+        <h2>8. SQL Patch Examples</h2>
+        <p>Apply these patches in your development environment first.</p>
+        <pre><code>-- [REDACTED] Tier-2 Hardening Patch for credentials_entity
+-- Current Vulnerability: Policy relies on nested join which can be bypassed.
+
+-- 1. DROP weak policy
+DROP POLICY IF EXISTS "Users can view project credentials" ON credentials_entity;
+
+-- 2. APPLY Hardened Forensic Policy
+-- This forces a direct check against the project ownership 
+-- and eliminates the "Structural Bridge" via the comments table.
+CREATE POLICY "Forensic-Hardened: Tenant Project Isolation"
+ON credentials_entity
+FOR SELECT
+TO authenticated
+USING (
+  EXISTS (
+    SELECT 1 FROM projects
+    WHERE projects.id = credentials_entity.project_id
+    AND projects.owner_id = auth.uid()
+  )
+);</code></pre>
+      </div>
+
+      <footer
+        style="
+          margin-top: 5rem;
+          text-align: center;
+          border-top: 1px solid var(--border);
+          padding-top: 2rem;
+        "
+      >
+        <div style="font-size: 0.8rem; color: var(--text-muted)">
+          Proprietary assessment generated by Otobrix Security Engine v7.2.0 — Confidential
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

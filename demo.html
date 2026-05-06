@@ -1,0 +1,1273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forensic Audit Methodology • Otobrix Labs</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Otobrix Forensic Lab",
+        "applicationCategory": "SecuritySoftware",
+        "description": "Watch a full forensic audit walkthrough. Graph-based vulnerability detection and institutional evidence deliverable showcase.",
+        "author": { "@type": "Organization", "name": "Otobrix Labs" }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230a0a0f%22/><circle cx=%2250%22 cy=%2250%22 r=%2225%22 fill=%22none%22 stroke=%22%2300e8d0%22 stroke-width=%228%22/><path d=%22M50 30 L50 70 M30 50 L70 50%22 stroke=%22%2300e8d0%22 stroke-width=%228%22 stroke-linecap=%22round%22/></svg>">
+    <style>
+      :root {
+        --bg: #0a0a0f;
+        --surface: #12121f;
+        --primary: #00e8d0;
+        --primary-glow: rgba(0, 232, 208, 0.4);
+        --text: #e2e8f0;
+        --text-muted: #94a3b8;
+        --border: rgba(255, 255, 255, 0.08);
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --card-bg: rgba(18, 18, 31, 1);
+        --font-header: "Inter", sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "JetBrains Mono", monospace;
+        background-color: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+
+      .background-blob {
+        position: fixed;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        filter: blur(100px);
+        z-index: -1;
+        opacity: 0.2;
+      }
+
+      .blob-1 {
+        top: -150px;
+        right: -150px;
+        background: radial-gradient(
+          circle,
+          var(--primary-glow) 0%,
+          transparent 70%
+        );
+      }
+
+      .blob-2 {
+        bottom: -150px;
+        left: -150px;
+        background: radial-gradient(
+          circle,
+          rgba(139, 92, 246, 0.15) 0%,
+          transparent 70%
+        );
+      }
+
+      .blob-3 {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(
+          circle,
+          var(--primary-glow) 0%,
+          transparent 70%
+        );
+      }
+
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 32px;
+        position: relative;
+        z-index: 10;
+      }
+
+      #workbench, #dashboard {
+        padding-bottom: 80px;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 60px;
+        position: sticky;
+        top: 0;
+        background: rgba(10, 10, 15, 0.9);
+        backdrop-filter: blur(12px);
+        z-index: 1000;
+      }
+
+      /* Mobile Menu Toggle */
+      .mobile-toggle {
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+        cursor: pointer;
+        z-index: 1001;
+        background: transparent;
+        border: none;
+        padding: 10px;
+      }
+
+      .mobile-toggle span {
+        display: block;
+        width: 25px;
+        height: 2px;
+        background: #fff;
+        transition: 0.3s;
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+
+      @media (max-width: 768px) {
+        .mobile-toggle {
+          display: flex;
+        }
+        .nav-actions {
+          display: none;
+          position: fixed;
+          top: 0;
+          right: -100%;
+          width: 80%;
+          max-width: 400px;
+          height: 100vh;
+          background: var(--surface);
+          flex-direction: column;
+          justify-content: center;
+          align-items: flex-start;
+          padding: 80px 40px;
+          gap: 32px;
+          transition: 0.4s;
+          box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+          z-index: 1000;
+        }
+        .nav-actions.active {
+          display: flex;
+          right: 0;
+        }
+      }
+
+      .logo {
+        font-family: var(--font-header);
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        text-decoration: none;
+        color: #fff;
+        display: inline-block;
+      }
+
+      .primary-color {
+        color: var(--primary);
+      }
+
+      .nav-link {
+        color: #60a5fa;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+
+      .nav-link:hover {
+        color: var(--primary);
+      }
+
+      header {
+        text-align: left;
+        margin-bottom: 60px;
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Workbench Styles */
+      .workbench-grid {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 24px;
+        margin-bottom: 40px;
+      }
+
+      .side-panel {
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 32px;
+      }
+
+      .dashboard-title {
+        font-family: var(--font-header);
+        font-size: 1.2rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .panel-title {
+        font-family: var(--font-header);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .module-list {
+        list-style: none;
+      }
+
+      .module-item {
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .module-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .module-item.active {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.3);
+        color: var(--primary);
+      }
+
+      .module-icon {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+      }
+
+      .active .module-icon {
+        background: var(--primary);
+        color: #fff;
+      }
+
+      /* Main Engine View */
+      .engine-view {
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        height: 600px;
+      }
+
+      .engine-header {
+        padding: 24px 32px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .engine-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        color: var(--success);
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--success);
+        border-radius: 50%;
+        box-shadow: 0 0 10px var(--success);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .terminal {
+        flex: 1;
+        background: #000;
+        padding: 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.85rem;
+        color: #a5b4fc;
+        overflow-y: auto;
+        position: relative;
+      }
+
+      .terminal::-webkit-scrollbar {
+        width: 6px;
+      }
+      .terminal::-webkit-scrollbar-thumb {
+        background: #1e293b;
+        border-radius: 3px;
+      }
+
+      .terminal-line {
+        margin-bottom: 4px;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: fadeInUp 0.3s forwards;
+      }
+
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .terminal-time {
+        color: #64748b;
+        margin-right: 8px;
+      }
+      .terminal-info {
+        color: #3b82f6;
+      }
+      .terminal-success {
+        color: #10b981;
+      }
+      .terminal-warning {
+        color: #f59e0b;
+      }
+      .terminal-danger {
+        color: #ef4444;
+      }
+
+      .engine-footer {
+        padding: 24px 32px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .run-btn {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          #8b5cf6
+        );
+        color: #fff;
+        border: none;
+        padding: 14px 32px;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .run-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -10px rgba(59, 130, 246, 0.5);
+      }
+
+      .run-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* Dashboard Styles (Hidden initially) */
+      #dashboard {
+        display: none;
+        animation: fadeIn 1s forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-bottom: 40px;
+      }
+
+      .stat-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 32px;
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #fff, var(--primary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .stat-label {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 24px;
+      }
+
+      .matrix-card,
+      .impact-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 32px;
+      }
+
+      .card-header {
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Isolation Matrix Table */
+      .matrix-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .matrix-table th {
+        text-align: left;
+        padding: 12px;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .matrix-table td {
+        padding: 16px 12px;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.9rem;
+      }
+
+      .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      .status-verified {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+      }
+      .status-leak {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+      }
+
+      /* Findings/Impact */
+      .finding-item {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .finding-item:hover {
+        border-color: var(--primary);
+        background: rgba(59, 130, 246, 0.05);
+      }
+
+      .finding-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .finding-table {
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+      .finding-severity {
+        color: var(--danger);
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+
+      .finding-desc {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+
+      .remediation-preview {
+        display: none;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+        color: #7dd3fc;
+        white-space: pre-wrap;
+      }
+
+      .finding-item.active .remediation-preview {
+        display: block;
+      }
+
+      .impact-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--danger);
+        margin: 12px 0;
+      }
+
+      .matrix-wrapper {
+        overflow-x: auto;
+        width: 100%;
+      }
+
+      /* Standardized Forensic Footer */
+      .site-footer {
+        border-top: 1px solid var(--border);
+        padding: 80px 0 40px;
+        margin-top: 100px;
+        background: rgba(10, 11, 14, 0.5);
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 60px;
+        margin-bottom: 60px;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 24px;
+      }
+
+      .footer-brand .brand-logo {
+        font-family: var(--font-header);
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 16px;
+        display: block;
+      }
+
+      .footer-brand p {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        max-width: 300px;
+      }
+
+      .footer-links h4 {
+        color: #fff;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 24px;
+      }
+
+      .footer-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .footer-links li {
+        margin-bottom: 12px;
+      }
+
+      .footer-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        display: inline-block;
+      }
+
+      .footer-links a:hover {
+        color: var(--primary);
+        transform: translateX(4px);
+      }
+
+      .footer-bottom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 24px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      .legal-links {
+        display: flex;
+        gap: 24px;
+      }
+
+      .legal-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      .legal-links a:hover {
+        color: #fff;
+      }
+
+      @media (max-width: 768px) {
+        .footer-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+          text-align: center;
+        }
+
+        .footer-brand p {
+          margin: 0 auto;
+        }
+
+        .footer-bottom {
+          flex-direction: column;
+          gap: 20px;
+          text-align: center;
+        }
+      }
+
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(8px);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s;
+      }
+
+      .overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .loader-content {
+        text-align: center;
+      }
+      .loader-text {
+        margin-top: 20px;
+        font-size: 1.1rem;
+        letter-spacing: 0.1em;
+        color: var(--primary);
+      }
+
+      .spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(59, 130, 246, 0.1);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Responsiveness */
+      @media (max-width: 1024px) {
+        .workbench-grid {
+          grid-template-columns: 1fr;
+        }
+        .side-panel {
+          padding: 20px;
+        }
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 16px;
+        }
+        .engine-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+          padding: 20px;
+        }
+        .engine-view {
+          height: auto;
+        }
+        .terminal {
+          height: 350px;
+        }
+        .engine-footer {
+          flex-direction: column;
+          align-items: stretch !important;
+          padding: 20px;
+        }
+        .engine-footer > div:last-child {
+          flex-direction: column;
+        }
+        .run-btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+          text-align: center;
+        }
+        .footer-brand p {
+          margin: 0 auto;
+        }
+        .footer-bottom {
+          flex-direction: column;
+          gap: 16px;
+          text-align: center;
+        }
+        header {
+          flex-direction: column;
+          align-items: flex-start !important;
+          gap: 12px;
+          padding: 24px 0 !important;
+        }
+        nav {
+          margin-bottom: 40px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .logo {
+          font-size: 1.4rem;
+        }
+        .stat-value {
+          font-size: 1.8rem;
+        }
+        .stat-card {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background-blob blob-1"></div>
+    <div class="background-blob blob-2"></div>
+
+    <div class="container" id="workbench">
+      <nav>
+        <a href="index.html" class="logo">Otobrix<span class="primary-color">Labs</span></a>
+        <div class="nav-actions" id="navActions">
+            <a 
+              href="javascript:void(0)" 
+              class="nav-link" 
+              style="font-size: 0.85rem; font-weight: 700; color: var(--primary);"
+              data-cal-link="otobrixlabs/technical-architecture-review"
+              data-cal-namespace="technical-architecture-review"
+              data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
+            >
+              Book Risk Review →
+            </a>
+            <a href="index.html" class="nav-link">← Return Home</a>
+        </div>
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </nav>
+
+      <div class="workbench-grid">
+        <aside class="side-panel">
+          <div class="panel-title">
+            <svg
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              ></path>
+            </svg>
+            Analysis Modules
+          </div>
+          <ul class="module-list">
+            <li class="module-item">
+              <div class="module-icon">A</div>
+              <span>Zero-Day Regression Guard</span>
+            </li>
+            <li class="module-item active" id="moduleB">
+              <div class="module-icon">B</div>
+              <span>10-Hop Transitive Trace</span>
+            </li>
+            <li class="module-item">
+              <div class="module-icon">C</div>
+              <span>Sandbox Validation</span>
+            </li>
+            <li class="module-item">
+              <div class="module-icon">D</div>
+              <span>Institutional Evidence Matrix</span>
+            </li>
+          </ul>
+        </aside>        <main class="engine-view" style="height: auto;">
+          <div class="engine-header">
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <h2 style="font-size: 1.1rem">Forensic Audit Methodology & Deliverable Demo</h2>
+              <p style="font-size: 0.8rem; color: var(--text-muted)">
+                Project: Acme SaaS Architecture • <span style="color: var(--primary); font-style: italic;">Synthetic Findings (Open-Source Schema)</span>
+              </p>
+            </div>
+            <div class="engine-status">
+              <div class="status-dot"></div>
+              Forensic Protocol Active
+            </div>
+          </div>
+
+          <div class="video-container" style="position: relative; padding-top: 56.25%; background: #000; overflow: hidden; border-bottom: 1px solid var(--border);">
+            <!-- Forensic Walkthrough Video (.webp) -->
+            <img src="file:///C:/Users/mdmho/.gemini/antigravity/brain/0ffd36d0-8f6a-4e3c-b6b3-e6a2af474cdb/forensic_audit_walkthrough_1773257048021.webp" 
+                 alt="Forensic Audit Walkthrough" 
+                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1;">
+            
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.1); backdrop-filter: blur(0px); transition: all 0.3s ease;">
+              <button class="run-btn" style="border-radius: 50%; width: 80px; height: 80px; padding: 0; display: flex; align-items: center; justify-content: center; background: var(--primary); box-shadow: 0 0 30px var(--primary-glow); cursor: pointer; border: none;">
+                <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"></path>
+                </svg>
+              </button>
+              <p style="margin-top: 16px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.85rem; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">CONTINUE TO INTERACTIVE REPORT</p>
+            </div>
+          </div>
+
+          <div class="engine-footer" style="justify-content: space-between; align-items: center; gap: 20px;">
+            <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+              <span style="color: var(--primary)">🛡️ Analysis Standard:</span> SOC2 Type II / HIPAA-Ready Methodology
+            </div>
+            <div style="display: flex; gap: 12px;">
+              <a href="#" class="run-btn" style="text-decoration: none;"
+                 data-cal-link="otobrixlabs/technical-architecture-review" 
+                 data-cal-namespace="technical-architecture-review"
+                 data-cal-config='{"layout":"month_view"}'>
+                BOOK TECHNICAL REVIEW
+              </a>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <!-- Institutional Deliverables Section -->
+      <div style="margin-top: 80px; padding-top: 80px; border-top: 1px solid var(--border);">
+        <h2 style="font-family: var(--font-header); font-size: 2rem; text-align: center; margin-bottom: 60px;">What You Receive</h2>
+        <div class="stats-grid">
+           <div class="stat-card">
+             <div style="font-size: 2.5rem; margin-bottom: 12px;">📊</div>
+             <h3 style="color: #fff; margin-bottom: 12px; font-size: 1rem;">Risk Scorecard</h3>
+             <p style="font-size: 0.85rem; color: var(--text-muted);">High-level C-Suite metrics quantifying your data isolation posture and potential financial exposure.</p>
+           </div>
+           <div class="stat-card">
+             <div style="font-size: 2.5rem; margin-bottom: 12px;">🛡️</div>
+             <h3 style="color: #fff; margin-bottom: 12px; font-size: 1rem;">Attack Visualization</h3>
+             <p style="font-size: 0.85rem; color: var(--text-muted);">Interactive Mermaid.js graphs tracing every possible hop an attacker could take to access restricted data.</p>
+           </div>
+           <div class="stat-card">
+             <div style="font-size: 2.5rem; margin-bottom: 12px;">📋</div>
+             <h3 style="color: #fff; margin-bottom: 12px; font-size: 1rem;">Audit-Ready Evidence</h3>
+             <p style="font-size: 0.85rem; color: var(--text-muted);">The signed V001–V016 Isolation Matrix providing deterministic proof of security to SOC2 auditors.</p>
+           </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 40px;">
+          <a href="sample-vault.html" class="run-btn" style="display: inline-flex; text-decoration: none; background: rgba(255,255,255,0.05); border: 1px solid var(--border);">
+            DOWNLOAD SAMPLE FORENSIC REPORT (PDF)
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transition Loader -->
+    <div class="overlay" id="loader">
+        <div class="spinner"></div>
+        <div class="loader-text">GENERATING FORENSIC REPORT...</div>
+      </div>
+    </div>
+
+    <!-- Security Health Dashboard -->
+    <div class="container" id="dashboard">
+      <header>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <div class="dashboard-title">UNIFIED SECURITY HEALTH DASHBOARD</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted)">
+            Report ID: OTO-ACME-449102 • Timestamp: 2026-03-01 23:55 UTC
+          </p>
+        </div>
+        <button
+          class="run-btn"
+          style="background: #1e293b; border: 1px solid var(--border)"
+          onclick="location.reload()"
+        >
+          RE-RUN AUDIT
+        </button>
+      </header>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">6</div>
+          <div class="stat-label">Critical Leaks Blocked</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">100%</div>
+          <div class="stat-label">Coverage Verified</div>
+        </div>
+        <div class="stat-card" style="border-color: var(--primary)">
+          <div
+            class="stat-value"
+            style="
+              background: linear-gradient(135deg, #fff, var(--success));
+              -webkit-background-clip: text;
+              background-clip: text;
+              -webkit-text-fill-color: transparent;
+            "
+          >
+            98.2%
+          </div>
+          <div class="stat-label">Isolation Confidence</div>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="matrix-card">
+          <div class="card-header">
+            <h3 style="font-size: 1rem">Isolation Matrix</h3>
+            <div class="engine-status" style="color: var(--text-muted)">
+              Verified vs RealPostgres
+            </div>
+          </div>
+            <div class="matrix-wrapper">
+              <table class="matrix-table">
+                <thead>
+                  <tr>
+                    <th>Table</th>
+                    <th>Policy Scope</th>
+                    <th>Cross-Tenant Leak</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight: 600">organizations</td>
+                    <td>Restrictive (Owner_ID)</td>
+                    <td style="color: var(--success)">NONE</td>
+                    <td><span class="status-badge status-verified">VERIFIED</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600">projects</td>
+                    <td>Restrictive (Org_ID)</td>
+                    <td style="color: var(--success)">NONE</td>
+                    <td><span class="status-badge status-verified">VERIFIED</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600; color: var(--danger)">transactions</td>
+                    <td style="color: var(--warning)">Overlapping Permissive</td>
+                    <td style="color: var(--danger)">MUTATION DETECTED</td>
+                    <td><span class="status-badge status-leak">LEAK FOUND</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600">ledger_entries</td>
+                    <td>Restrictive (Org_ID)</td>
+                    <td style="color: var(--success)">NONE</td>
+                    <td><span class="status-badge status-verified">VERIFIED</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600">audit_logs</td>
+                    <td>Restrictive (Org_ID)</td>
+                    <td style="color: var(--success)">NONE</td>
+                    <td><span class="status-badge status-verified">VERIFIED</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+        </div>
+
+        <div
+          class="side-bar"
+          style="display: flex; flex-direction: column; gap: 24px"
+        >
+          <div class="impact-card" style="border: 1px solid rgba(239,68,68,0.5); box-shadow: 0 0 24px -8px rgba(239,68,68,0.4); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; right: 0; background: linear-gradient(90deg, rgba(239,68,68,0.15), transparent); height: 3px;"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <h3 style="font-size: 1rem;">Financial Risk Impact</h3>
+              <span style="font-size: 0.65rem; font-weight: 700; background: rgba(239,68,68,0.15); color: var(--danger); padding: 3px 8px; border-radius: 20px; letter-spacing: 0.08em;">MAX EXPOSURE</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">
+              Confirmed cross-tenant BOLA leak on <code style="font-size:0.8rem; color: #f87171;">'tickets'</code> table.
+            </p>
+            <div class="impact-value" style="font-size: 2.8rem; animation: pulse 2s infinite;">
+              $122,500
+              <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 400;">/ per incident</span>
+            </div>
+            <p style="font-size: 0.8rem; color: #94a3b8; font-style: italic; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 4px;">
+              4,200 exposed PII records × $29.16 avg forensic recovery &amp; HIPAA penalty cost.
+            </p>
+          </div>
+
+          <div class="matrix-card">
+            <h3 style="font-size: 1rem; margin-bottom: 20px">
+              Critical Findings
+            </h3>
+            <div class="finding-item active">
+              <div class="finding-meta">
+                <span class="finding-table">transactions</span>
+                <span class="finding-severity">CRITICAL</span>
+              </div>
+              <div class="finding-desc">
+                Missing <code>AS RESTRICTIVE</code> enforcement. Existing policies are permissive, allowing bypass via overlapping roles.
+              </div>
+              <div class="remediation-preview">
+-- REMEDIATION: Cross-Tenant Mutation (IDOR) Hardening
+-- Logic: Enforce Restrictive JWT Claim Validation
+
+DROP POLICY IF EXISTS "tenant_isolation_policy" ON "public"."transactions";
+
+CREATE POLICY "tenant_isolation_policy" 
+ON "public"."transactions"
+AS RESTRICTIVE -- Ensures no other policy can accidentally grant access
+FOR ALL 
+TO authenticated
+USING (
+  tenant_id = (select auth.jwt() ->> 'tenant_id')::uuid
+)
+WITH CHECK (
+  tenant_id = (select auth.jwt() ->> 'tenant_id')::uuid
+);
+
+-- Note: Validation shifted from auth.uid() to tenant_id claim to 
+-- prevent role-escalation and orphan record creation.</div>
+            </div>
+            <div class="finding-item">
+              <div class="finding-meta">
+                <span class="finding-table">secure_audit_log</span>
+                <span class="finding-severity" style="color: var(--warning)"
+                  >SECURITY DEFINER</span
+                >
+              </div>
+              <div class="finding-desc">
+                Search Path Hijacking vulnerability detected. Function executes with owner privileges without schema locking.
+              </div>
+              <div class="remediation-preview">
+-- REMEDIATION: SECURITY DEFINER Search Path Hijacking
+-- Fix: Explicit Search Path & Contextual Validation
+
+CREATE OR REPLACE FUNCTION "internal"."secure_audit_log"(row_id uuid)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER -- Runs with owner privileges
+SET search_path = public, pg_temp -- Prevent hijacking by locking the search path
+AS $$
+BEGIN
+  -- Verify the session JWT 'tenant_id' matches the target row's tenant_id
+  IF NOT EXISTS (
+    SELECT 1 FROM public.tenant_data
+    WHERE id = row_id
+    AND tenant_id = (select auth.jwt() ->> 'tenant_id')::uuid
+  ) THEN
+    RAISE EXCEPTION 'Unauthorized: Isolation Boundary Violation Detected';
+  END IF;
+
+  INSERT INTO internal.audit_trail (target_id, actor_id)
+  VALUES (row_id, auth.uid());
+END;
+$$;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- End Dashboard container -->
+
+    <script>
+        const loader = document.getElementById('loader');
+        const workbench = document.getElementById('workbench');
+        const dashboard = document.getElementById('dashboard');
+        const playBtn = document.querySelector('.video-container .run-btn');
+
+        if (playBtn) {
+            playBtn.addEventListener('click', async () => {
+                loader.classList.add('active');
+                loader.querySelector('.loader-text').innerText = "CALCULATING ISOLATION BOUNDARIES...";
+                
+                // Simulate processing time
+                await new Promise(r => setTimeout(r, 2000)); 
+                
+                workbench.style.display = 'none';
+                dashboard.style.display = 'block';
+                loader.classList.remove('active');
+                window.scrollTo(0, 0);
+            });
+        }
+
+        document.querySelectorAll('.finding-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.finding-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    </script>
+    
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <span class="brand-logo">Otobrix Labs</span>
+            <p>Deterministic Security Verification for PostgreSQL & Supabase Architecture.</p>
+          </div>
+          
+          <div class="footer-links">
+            <h4>Platform</h4>
+            <ul>
+              <li><a href="index.html">Home</a></li>
+              <li><a href="sample-vault.html">Forensic Vault</a></li>
+              <li><a href="demo.html">Methodology Demo</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-links">
+            <h4>Engagement</h4>
+            <ul>
+              <li><a href="#" 
+                 data-cal-link="otobrixlabs/technical-architecture-review" 
+                 data-cal-namespace="technical-architecture-review"
+                 data-cal-config='{"layout":"month_view"}'>Architecture Review ($2,800)</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>© 2026 Otobrix Labs | Secure Infrastructure Verification</p>
+          <div class="legal-links">
+            <!-- Legal documentation in forensic review -->
+          </div>
+        </div>
+      </footer>
+
+    <!-- Cal element-click embed code begins -->
+    <script type="text/javascript">
+      (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+    Cal("init", "technical-architecture-review", {origin:"https://app.cal.com"});
+
+    Cal.ns["technical-architecture-review"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+
+    // Mobile menu toggle
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navActions = document.getElementById('navActions');
+    if (mobileToggle && navActions) {
+      mobileToggle.addEventListener('click', () => {
+        navActions.classList.toggle('active');
+        document.body.style.overflow = navActions.classList.contains('active') ? 'hidden' : '';
+      });
+      document.querySelectorAll('.nav-actions a').forEach(link => {
+        link.addEventListener('click', () => {
+          navActions.classList.remove('active');
+          document.body.style.overflow = '';
+        });
+      });
+    }
+    </script>
+    <!-- Cal element-click embed code ends -->
+  </body>
+</html>

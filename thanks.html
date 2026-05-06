@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - Otobrix Labs</title>
+    <meta name="description" content="Thank you for contacting Otobrix Labs">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+    
+    <!-- Google Fonts - JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230a0a0f%22/><circle cx=%2250%22 cy=%2250%22 r=%2225%22 fill=%22none%22 stroke=%22%2300e8d0%22 stroke-width=%228%22/><path d=%22M50 30 L50 70 M30 50 L70 50%22 stroke=%22%2300e8d0%22 stroke-width=%228%22 stroke-linecap=%22round%22/></svg>">
+    
+    <style>
+        /* Reset & Base */
+        *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:'JetBrains Mono',monospace;background:#0a0a0f;color:#e2e8f0;line-height:1.6;font-size:16px;overflow-x:hidden;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;min-height:100vh}
+        
+        /* Variables */
+        :root{--bg:#0a0a0f;--surface:#12121f;--primary:#00e8d0;--primary-glow:rgba(0,232,208,0.2);--text:#e2e8f0;--text-muted:#94a3b8;--border:rgba(255,255,255,0.08)}
+        
+        /* Typography */
+        h1,h2{font-family:'JetBrains Mono',monospace;font-weight:700;line-height:1.2}h1{font-size:clamp(2rem,5vw,3rem);margin-bottom:1rem}h2{font-size:clamp(1.25rem,3vw,1.5rem);margin-bottom:1.5rem;color:var(--text-muted)}p{margin-bottom:1.5rem;color:var(--text-muted)}a{color:var(--primary);text-decoration:none;transition:opacity 0.2s}a:hover{opacity:0.8}
+        
+        /* Container */
+        .container{text-align:center;padding:2rem;max-width:600px}
+        
+        /* Card */
+        .card{background:var(--surface);border-radius:8px;padding:3rem 2rem;border:1px solid var(--border)}
+        
+        /* Buttons */
+        .btn{display:inline-block;padding:1.25rem 2.5rem;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1rem;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;text-align:center;background:var(--primary);color:var(--bg);margin-top:1rem}.btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,232,208,0.3)}
+        
+        /* Logo */
+        .logo{font-family:'Inter',sans-serif;font-weight:800;font-size:1.5rem;margin-bottom:3rem}.primary-color{color:var(--primary)}
+        
+        /* Checkmark */
+        .checkmark{width:80px;height:80px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;margin:0 auto 2rem;font-size:3rem}
+        
+        /* Background gradient */
+        .bg-gradient{position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 50% 50%,rgba(0,232,208,0.05)0%,transparent 50%);z-index:-1}
+        
+        /* List */
+        ul{list-style:none;margin:2rem 0;text-align:left}li{margin-bottom:0.75rem;padding-left:1.5rem;position:relative;color:var(--text-muted)}li::before{content:"✓";position:absolute;left:0;color:var(--primary)}
+    </style>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="container">
+        <div class="logo">Otobrix<span class="primary-color">Labs</span></div>
+        <div class="card">
+            <div class="checkmark">✓</div>
+            <h1>Thank You!</h1>
+            <h2>Your audit request has been received</h2>
+            <p>I'll review your submission and get back to you within 24 hours with next steps.</p>
+            
+            <ul>
+                <li>Request received successfully</li>
+                <li>I'll review your store details</li>
+                <li>Expect an email within 24 hours to schedule a call</li>
+            </ul>
+            
+            <a href="index.html" class="btn">← Back to Home</a>
+        </div>
+    </div>
+    <!-- Cal element-click embed code begins -->
+    <script type="text/javascript">
+      (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+    Cal("init", "technical-architecture-review", {origin:"https://app.cal.com"});
+
+    Cal.ns["technical-architecture-review"]("ui", {"hideEventTypeDetails":false,"layout":"month_view"});
+    </script>
+    <!-- Cal element-click embed code ends -->
+</body>
+</html>
